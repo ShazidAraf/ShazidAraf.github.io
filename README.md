@@ -1,2 +1,2 @@
-# shazid.github.io
+# ShazidAraf.github.io
 Personal Website
