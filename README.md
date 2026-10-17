@@ -25,6 +25,10 @@ Drop a file with the matching name into `assets/media/`. The placeholder disappe
 Keep GIFs under about 5 MB. For an MP4, replace the `<img>` in that project's `<figure class="media">` with
 `<video src="assets/media/name.mp4" autoplay muted loop playsinline></video>`.
 
-## Adding photos
+## Photography
 
-Put up to four photos in `assets/photos/` named `photo1.jpg` to `photo4.jpg` (4:3 works best, about 1200 px wide). Empty slots show a placeholder until a file is added.
+- `photos/index.html`: the full photo page (all photos, click to open full size).
+- `assets/photos/full/`: large copies (about 1800 px). `assets/photos/thumb/`: grid copies (about 720 px).
+- The home page shows 8 of them in the Beyond research section.
+
+To add a photo, put both sizes in those folders with the same file name, then copy one `<figure class="pcard">` block in `photos/index.html` and change the file name and caption.

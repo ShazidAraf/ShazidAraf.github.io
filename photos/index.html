@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photography | Md Shazid Islam</title>
+<meta name="description" content="Travel photography by Md Shazid Islam: coastlines, national parks, and cities.">
+<script>
+(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/project.css">
+<style>
+.photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 8px 0 0; }
+.pcard { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.pcard a { display: block; }
+.pcard img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border: 0; border-radius: 0; padding: 0; transition: transform .3s; }
+.pcard a:hover img { transform: scale(1.03); }
+.pcard figcaption { padding: 11px 15px; margin: 0; font-weight: 700; font-size: 15.5px; color: var(--ink); }
+.lb { position: fixed; inset: 0; background: rgba(8,12,16,.92); display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 50; padding: 20px; }
+.lb.open { display: flex; }
+.lb img { max-width: 100%; max-height: 82vh; width: auto; border-radius: 8px; }
+.lb p { color: #fff; margin: 12px 0 0; font-weight: 700; }
+.lb button { position: absolute; background: rgba(255,255,255,.12); color: #fff; border: 0; width: 44px; height: 44px; border-radius: 50%; font-size: 22px; cursor: pointer; }
+.lb .x { top: 16px; right: 16px; } .lb .prev { left: 16px; top: 50%; } .lb .next { right: 16px; top: 50%; }
+@media (max-width: 860px) { .photo-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .photo-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="topbar"><div class="in">
+  <a href="../">Md Shazid Islam</a>
+  <div class="bar-right">
+    <nav aria-label="Sections"><a href="../#research">Research</a><a href="../#publications">Publications</a><a href="../#beyond">Beyond research</a></nav>
+    <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
+      <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 1.8v2.6M12 19.6v2.6M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M1.8 12h2.6M19.6 12h2.6M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    </button>
+  </div>
+</div></header>
+<main class="wide">
+  <section>
+    <h2>Photography</h2>
+    <p>Pictures from my trips around California and the US: coastlines, national parks, and a few cities. Click a photo to see it full size.</p>
+    <div class="photo-grid">
+          <figure class="pcard"><a href="../assets/photos/full/01_victoria-beach.jpg" data-cap="Victoria Beach"><img src="../assets/photos/thumb/01_victoria-beach.jpg" alt="Victoria Beach, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Victoria Beach</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/02_san-francisco.jpg" data-cap="San Francisco"><img src="../assets/photos/thumb/02_san-francisco.jpg" alt="San Francisco, photo by Md Shazid Islam" loading="lazy"></a><figcaption>San Francisco</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/03_seaworld-san-diego.jpg" data-cap="SeaWorld San Diego"><img src="../assets/photos/thumb/03_seaworld-san-diego.jpg" alt="SeaWorld San Diego, photo by Md Shazid Islam" loading="lazy"></a><figcaption>SeaWorld San Diego</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/04_new-york-city.jpg" data-cap="New York City"><img src="../assets/photos/thumb/04_new-york-city.jpg" alt="New York City, photo by Md Shazid Islam" loading="lazy"></a><figcaption>New York City</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/05_big-bear.jpg" data-cap="Big Bear"><img src="../assets/photos/thumb/05_big-bear.jpg" alt="Big Bear, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Big Bear</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/06_big-sur.jpg" data-cap="Big Sur"><img src="../assets/photos/thumb/06_big-sur.jpg" alt="Big Sur, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Big Sur</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/07_sycamore.jpg" data-cap="Sycamore"><img src="../assets/photos/thumb/07_sycamore.jpg" alt="Sycamore, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Sycamore</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/08_grand-canyon.jpg" data-cap="Grand Canyon"><img src="../assets/photos/thumb/08_grand-canyon.jpg" alt="Grand Canyon, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Grand Canyon</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/09_griffith-observatory.jpg" data-cap="Griffith Observatory"><img src="../assets/photos/thumb/09_griffith-observatory.jpg" alt="Griffith Observatory, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Griffith Observatory</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/10_las-vegas.jpg" data-cap="Las Vegas"><img src="../assets/photos/thumb/10_las-vegas.jpg" alt="Las Vegas, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Las Vegas</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/11_lower-falls.jpg" data-cap="Lower Falls"><img src="../assets/photos/thumb/11_lower-falls.jpg" alt="Lower Falls, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Lower Falls</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/12_glacier-point.jpg" data-cap="Glacier Point"><img src="../assets/photos/thumb/12_glacier-point.jpg" alt="Glacier Point, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Glacier Point</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/13_vernal-falls.jpg" data-cap="Vernal Falls"><img src="../assets/photos/thumb/13_vernal-falls.jpg" alt="Vernal Falls, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Vernal Falls</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/14_mono-lake.jpg" data-cap="Mono Lake"><img src="../assets/photos/thumb/14_mono-lake.jpg" alt="Mono Lake, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Mono Lake</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/15_tenaya-lake.jpg" data-cap="Tenaya Lake"><img src="../assets/photos/thumb/15_tenaya-lake.jpg" alt="Tenaya Lake, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Tenaya Lake</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/16_hetch-hetchy-reservoir.jpg" data-cap="Hetch Hetchy Reservoir"><img src="../assets/photos/thumb/16_hetch-hetchy-reservoir.jpg" alt="Hetch Hetchy Reservoir, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Hetch Hetchy Reservoir</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/17_coronado-island.jpg" data-cap="Coronado Island, San Diego"><img src="../assets/photos/thumb/17_coronado-island.jpg" alt="Coronado Island, San Diego, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Coronado Island, San Diego</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/18_mount-rubidoux.jpg" data-cap="Mount Rubidoux"><img src="../assets/photos/thumb/18_mount-rubidoux.jpg" alt="Mount Rubidoux, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Mount Rubidoux</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/19_san-francisco-peninsula.jpg" data-cap="San Francisco Peninsula"><img src="../assets/photos/thumb/19_san-francisco-peninsula.jpg" alt="San Francisco Peninsula, photo by Md Shazid Islam" loading="lazy"></a><figcaption>San Francisco Peninsula</figcaption></figure>
+          <figure class="pcard"><a href="../assets/photos/full/20_niagara-falls.jpg" data-cap="Niagara Falls"><img src="../assets/photos/thumb/20_niagara-falls.jpg" alt="Niagara Falls, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Niagara Falls</figcaption></figure>
+    </div>
+  </section>
+</main>
+<div class="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="x" aria-label="Close">&times;</button>
+  <button class="prev" aria-label="Previous">&#8249;</button>
+  <img alt=""><p></p>
+  <button class="next" aria-label="Next">&#8250;</button>
+</div>
+<footer><div class="wide"><span><a href="../">Back to home</a></span><span>All photos by Md Shazid Islam</span></div></footer>
+<script>
+(function(){
+  var b=document.querySelector('.theme-toggle');
+  function cur(){return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';}
+  function sync(){var d=cur()==='dark';b.classList.toggle('is-dark',d);b.setAttribute('aria-label',d?'Switch to light theme':'Switch to dark theme');}
+  b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
+  sync();
+  var links=[].slice.call(document.querySelectorAll('.pcard a')),lb=document.querySelector('.lb'),im=lb.querySelector('img'),cap=lb.querySelector('p'),i=0;
+  function show(k){i=(k+links.length)%links.length;im.src=links[i].href;im.alt=links[i].dataset.cap;cap.textContent=links[i].dataset.cap;lb.classList.add('open');}
+  links.forEach(function(a,k){a.addEventListener('click',function(e){e.preventDefault();show(k);});});
+  lb.querySelector('.x').onclick=function(){lb.classList.remove('open');};
+  lb.querySelector('.prev').onclick=function(){show(i-1);};
+  lb.querySelector('.next').onclick=function(){show(i+1);};
+  lb.addEventListener('click',function(e){if(e.target===lb)lb.classList.remove('open');});
+  document.addEventListener('keydown',function(e){if(!lb.classList.contains('open'))return;if(e.key==='Escape')lb.classList.remove('open');if(e.key==='ArrowLeft')show(i-1);if(e.key==='ArrowRight')show(i+1);});
+})();
+</script>
+</body>
+</html>

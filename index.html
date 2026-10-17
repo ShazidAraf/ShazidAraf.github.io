@@ -259,10 +259,14 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 .hobby h3, .hobby-photos h3 { font-family: "Bricolage Grotesque", sans-serif; font-size: 23px; margin: 0 0 8px; color: var(--contour); }
 .hobby p { margin: 0 0 12px; max-width: 60ch; }
 .hobby-photos { padding: 28px 0 0; border-top: 1px solid var(--line); }
-.photo-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-.media.photo { aspect-ratio: 4 / 3; }
-.media.photo .ph span { font-size: 14px; }
-@media (max-width: 860px) { .hobby { grid-template-columns: 1fr; gap: 18px; } .photo-strip { grid-template-columns: 1fr 1fr; } }
+.hobby-photos > p { margin: 0 0 16px; max-width: 60ch; }
+.photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 18px; }
+.pcard { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.pcard a { display: block; }
+.pcard img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; transition: transform .3s; }
+.pcard a:hover img { transform: scale(1.03); }
+.pcard figcaption { padding: 10px 14px; font-weight: 700; font-size: 15px; }
+@media (max-width: 860px) { .hobby { grid-template-columns: 1fr; gap: 18px; } .photo-grid { grid-template-columns: 1fr 1fr; } }
 /* Single accent */
 .block h2::after { content: ""; display: block; width: 48px; height: 4px; border-radius: 2px; margin-top: 10px; background: var(--contour); }
 .news time { color: var(--contour); font-weight: 700; }
@@ -282,6 +286,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <a href="#about">About</a>
       <a href="#research">Research</a>
       <a href="#publications">Publications</a>
+      <a href="#beyond">Beyond research</a>
       <a href="Md_Shazid_Islam_Resume.pdf">Resume</a>
       </nav>
       <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
@@ -693,12 +698,18 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       </article>
       <div class="hobby-photos">
         <h3>Photography</h3>
-        <div class="photo-strip">
-          <figure class="media photo"><img src="assets/photos/photo1.jpg" alt="Photograph by Md Shazid Islam" loading="lazy" onerror="this.parentElement.classList.add('empty')"><div class="ph"><span>Photo 1</span></div></figure>
-          <figure class="media photo"><img src="assets/photos/photo2.jpg" alt="Photograph by Md Shazid Islam" loading="lazy" onerror="this.parentElement.classList.add('empty')"><div class="ph"><span>Photo 2</span></div></figure>
-          <figure class="media photo"><img src="assets/photos/photo3.jpg" alt="Photograph by Md Shazid Islam" loading="lazy" onerror="this.parentElement.classList.add('empty')"><div class="ph"><span>Photo 3</span></div></figure>
-          <figure class="media photo"><img src="assets/photos/photo4.jpg" alt="Photograph by Md Shazid Islam" loading="lazy" onerror="this.parentElement.classList.add('empty')"><div class="ph"><span>Photo 4</span></div></figure>
+        <p>I like taking pictures on trips, mostly coastlines, national parks, and cities. A few favorites are below.</p>
+        <div class="photo-grid">
+          <figure class="pcard"><a href="photos/" data-cap="Victoria Beach"><img src="assets/photos/thumb/01_victoria-beach.jpg" alt="Victoria Beach, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Victoria Beach</figcaption></figure>
+          <figure class="pcard"><a href="photos/" data-cap="Big Sur"><img src="assets/photos/thumb/06_big-sur.jpg" alt="Big Sur, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Big Sur</figcaption></figure>
+          <figure class="pcard"><a href="photos/" data-cap="Glacier Point"><img src="assets/photos/thumb/12_glacier-point.jpg" alt="Glacier Point, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Glacier Point</figcaption></figure>
+          <figure class="pcard"><a href="photos/" data-cap="Grand Canyon"><img src="assets/photos/thumb/08_grand-canyon.jpg" alt="Grand Canyon, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Grand Canyon</figcaption></figure>
+          <figure class="pcard"><a href="photos/" data-cap="Mono Lake"><img src="assets/photos/thumb/14_mono-lake.jpg" alt="Mono Lake, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Mono Lake</figcaption></figure>
+          <figure class="pcard"><a href="photos/" data-cap="Griffith Observatory"><img src="assets/photos/thumb/09_griffith-observatory.jpg" alt="Griffith Observatory, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Griffith Observatory</figcaption></figure>
+          <figure class="pcard"><a href="photos/" data-cap="Vernal Falls"><img src="assets/photos/thumb/13_vernal-falls.jpg" alt="Vernal Falls, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Vernal Falls</figcaption></figure>
+          <figure class="pcard"><a href="photos/" data-cap="San Francisco"><img src="assets/photos/thumb/02_san-francisco.jpg" alt="San Francisco, photo by Md Shazid Islam" loading="lazy"></a><figcaption>San Francisco</figcaption></figure>
         </div>
+        <div class="links"><a href="photos/">See all 20 photos</a></div>
       </div>
     </div>
   </section>
