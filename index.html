@@ -26,19 +26,6 @@
   --mask-soft: rgba(180, 51, 111, 0.10);
   --contour-soft: rgba(14, 124, 147, 0.10);
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0F171E;
-    --surface: #16212A;
-    --ink: #E3EAF0;
-    --muted: #9AAAB7;
-    --line: #2A3946;
-    --contour: #4CC3DA;
-    --mask: #E57AAE;
-    --mask-soft: rgba(229, 122, 174, 0.14);
-    --contour-soft: rgba(76, 195, 218, 0.12);
-  }
-}
 :root[data-theme="dark"] {
   --bg: #0F171E;
   --surface: #16212A;
@@ -627,11 +614,9 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 <script>
 (function(){
   var b=document.querySelector('.theme-toggle'); if(!b) return;
-  var mq=window.matchMedia('(prefers-color-scheme: dark)');
-  function cur(){var t=document.documentElement.getAttribute('data-theme');return t?t:(mq.matches?'dark':'light');}
+    function cur(){var t=document.documentElement.getAttribute('data-theme');return t==='dark'?'dark':'light';}
   function sync(){var d=cur()==='dark';b.setAttribute('aria-label',d?'Switch to light theme':'Switch to dark theme');b.classList.toggle('is-dark',d);}
   b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
-  if(mq.addEventListener)mq.addEventListener('change',sync);
   sync();
 })();
 </script>

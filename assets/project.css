@@ -11,13 +11,6 @@
   --mask-soft: rgba(180, 51, 111, 0.10);
   --contour-soft: rgba(14, 124, 147, 0.10);
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0F171E; --surface: #16212A; --paper: #F4F6F8; --ink: #E3EAF0; --muted: #9AAAB7;
-    --line: #2A3946; --contour: #4CC3DA; --mask: #E57AAE;
-    --mask-soft: rgba(229, 122, 174, 0.14); --contour-soft: rgba(76, 195, 218, 0.12);
-  }
-}
 :root[data-theme="dark"] {
   --bg: #0F171E; --surface: #16212A; --paper: #F4F6F8; --ink: #E3EAF0; --muted: #9AAAB7;
   --line: #2A3946; --contour: #4CC3DA; --mask: #E57AAE;

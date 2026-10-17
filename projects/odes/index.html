@@ -205,11 +205,9 @@ document.querySelectorAll('.copy').forEach(function (b) {
 <script>
 (function(){
   var b=document.querySelector('.theme-toggle'); if(!b) return;
-  var mq=window.matchMedia('(prefers-color-scheme: dark)');
-  function cur(){var t=document.documentElement.getAttribute('data-theme');return t?t:(mq.matches?'dark':'light');}
+    function cur(){var t=document.documentElement.getAttribute('data-theme');return t==='dark'?'dark':'light';}
   function sync(){var d=cur()==='dark';b.setAttribute('aria-label',d?'Switch to light theme':'Switch to dark theme');b.classList.toggle('is-dark',d);}
   b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
-  if(mq.addEventListener)mq.addEventListener('change',sync);
   sync();
 })();
 </script>
