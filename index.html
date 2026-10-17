@@ -266,6 +266,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 .pcard img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; transition: transform .3s; }
 .pcard a:hover img { transform: scale(1.03); }
 .pcard figcaption { padding: 10px 14px; font-weight: 700; font-size: 15px; }
+.pcard figcaption a { color: var(--contour); text-decoration: none; }
+.pcard figcaption a:hover { text-decoration: underline; }
 @media (max-width: 860px) { .hobby { grid-template-columns: 1fr; gap: 18px; } .photo-grid { grid-template-columns: 1fr 1fr; } }
 /* Single accent */
 .block h2::after { content: ""; display: block; width: 48px; height: 4px; border-radius: 2px; margin-top: 10px; background: var(--contour); }
@@ -698,16 +700,16 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       </article>
       <div class="hobby-photos">
         <h3>Photography</h3>
-        <p>I like taking pictures on trips, mostly coastlines, national parks, and cities. A few favorites are below.</p>
+        <p>I like taking pictures on trips, mostly coastlines, national parks, and cities. A few favorites are below. Each one opens its full album on Google Photos.</p>
         <div class="photo-grid">
-          <figure class="pcard"><a href="photos/" data-cap="Victoria Beach"><img src="assets/photos/thumb/01_victoria-beach.jpg" alt="Victoria Beach, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Victoria Beach</figcaption></figure>
-          <figure class="pcard"><a href="photos/" data-cap="Big Sur"><img src="assets/photos/thumb/06_big-sur.jpg" alt="Big Sur, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Big Sur</figcaption></figure>
-          <figure class="pcard"><a href="photos/" data-cap="Glacier Point"><img src="assets/photos/thumb/12_glacier-point.jpg" alt="Glacier Point, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Glacier Point</figcaption></figure>
-          <figure class="pcard"><a href="photos/" data-cap="Grand Canyon"><img src="assets/photos/thumb/08_grand-canyon.jpg" alt="Grand Canyon, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Grand Canyon</figcaption></figure>
-          <figure class="pcard"><a href="photos/" data-cap="Mono Lake"><img src="assets/photos/thumb/14_mono-lake.jpg" alt="Mono Lake, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Mono Lake</figcaption></figure>
-          <figure class="pcard"><a href="photos/" data-cap="Griffith Observatory"><img src="assets/photos/thumb/09_griffith-observatory.jpg" alt="Griffith Observatory, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Griffith Observatory</figcaption></figure>
-          <figure class="pcard"><a href="photos/" data-cap="Vernal Falls"><img src="assets/photos/thumb/13_vernal-falls.jpg" alt="Vernal Falls, photo by Md Shazid Islam" loading="lazy"></a><figcaption>Vernal Falls</figcaption></figure>
-          <figure class="pcard"><a href="photos/" data-cap="San Francisco"><img src="assets/photos/thumb/02_san-francisco.jpg" alt="San Francisco, photo by Md Shazid Islam" loading="lazy"></a><figcaption>San Francisco</figcaption></figure>
+          <figure class="pcard"><a href="https://photos.app.goo.gl/KHdjkZMR8sKs85NVA" target="_blank" rel="noopener" aria-label="Victoria Beach album on Google Photos"><img src="assets/photos/thumb/01_victoria-beach.jpg" alt="Victoria Beach, photo by Md Shazid Islam" loading="lazy"></a><figcaption><a href="https://photos.app.goo.gl/KHdjkZMR8sKs85NVA" target="_blank" rel="noopener">Victoria Beach</a></figcaption></figure>
+          <figure class="pcard"><a href="https://photos.app.goo.gl/sS9DpbfdLJ554VhT8" target="_blank" rel="noopener" aria-label="Big Sur album on Google Photos"><img src="assets/photos/thumb/06_big-sur.jpg" alt="Big Sur, photo by Md Shazid Islam" loading="lazy"></a><figcaption><a href="https://photos.app.goo.gl/sS9DpbfdLJ554VhT8" target="_blank" rel="noopener">Big Sur</a></figcaption></figure>
+          <figure class="pcard"><a href="https://photos.app.goo.gl/nDrWT2kZuAaijXeM7" target="_blank" rel="noopener" aria-label="Glacier Point album on Google Photos"><img src="assets/photos/thumb/12_glacier-point.jpg" alt="Glacier Point, photo by Md Shazid Islam" loading="lazy"></a><figcaption><a href="https://photos.app.goo.gl/nDrWT2kZuAaijXeM7" target="_blank" rel="noopener">Glacier Point</a></figcaption></figure>
+          <figure class="pcard"><a href="https://photos.app.goo.gl/sc6QeWgpDj424Ci39" target="_blank" rel="noopener" aria-label="Grand Canyon album on Google Photos"><img src="assets/photos/thumb/08_grand-canyon.jpg" alt="Grand Canyon, photo by Md Shazid Islam" loading="lazy"></a><figcaption><a href="https://photos.app.goo.gl/sc6QeWgpDj424Ci39" target="_blank" rel="noopener">Grand Canyon</a></figcaption></figure>
+          <figure class="pcard"><a href="https://photos.app.goo.gl/6so5ZBAoDsUYnKZR9" target="_blank" rel="noopener" aria-label="Mono Lake album on Google Photos"><img src="assets/photos/thumb/14_mono-lake.jpg" alt="Mono Lake, photo by Md Shazid Islam" loading="lazy"></a><figcaption><a href="https://photos.app.goo.gl/6so5ZBAoDsUYnKZR9" target="_blank" rel="noopener">Mono Lake</a></figcaption></figure>
+          <figure class="pcard"><a href="https://photos.app.goo.gl/XTzCjhPUBxdJ3K2j7" target="_blank" rel="noopener" aria-label="Griffith Observatory album on Google Photos"><img src="assets/photos/thumb/09_griffith-observatory.jpg" alt="Griffith Observatory, photo by Md Shazid Islam" loading="lazy"></a><figcaption><a href="https://photos.app.goo.gl/XTzCjhPUBxdJ3K2j7" target="_blank" rel="noopener">Griffith Observatory</a></figcaption></figure>
+          <figure class="pcard"><a href="https://photos.app.goo.gl/vi4YXfa6nBw6isT5A" target="_blank" rel="noopener" aria-label="Vernal Falls album on Google Photos"><img src="assets/photos/thumb/13_vernal-falls.jpg" alt="Vernal Falls, photo by Md Shazid Islam" loading="lazy"></a><figcaption><a href="https://photos.app.goo.gl/vi4YXfa6nBw6isT5A" target="_blank" rel="noopener">Vernal Falls</a></figcaption></figure>
+          <figure class="pcard"><a href="https://photos.app.goo.gl/xKGzwrLNMqvcBaBm7" target="_blank" rel="noopener" aria-label="San Francisco album on Google Photos"><img src="assets/photos/thumb/02_san-francisco.jpg" alt="San Francisco, photo by Md Shazid Islam" loading="lazy"></a><figcaption><a href="https://photos.app.goo.gl/xKGzwrLNMqvcBaBm7" target="_blank" rel="noopener">San Francisco</a></figcaption></figure>
         </div>
         <div class="links"><a href="photos/">See all 20 photos</a></div>
       </div>

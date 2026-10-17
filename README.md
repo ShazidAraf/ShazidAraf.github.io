@@ -27,7 +27,7 @@ Keep GIFs under about 5 MB. For an MP4, replace the `<img>` in that project's `<
 
 ## Photography
 
-- `photos/index.html`: the full photo page (all photos, click to open full size).
+- `photos/index.html`: the full photo page (each photo and caption links to its Google Photos album).
 - `assets/photos/full/`: large copies (about 1800 px). `assets/photos/thumb/`: grid copies (about 720 px).
 - The home page shows 8 of them in the Beyond research section.
 
