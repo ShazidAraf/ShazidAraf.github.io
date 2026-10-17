@@ -2,267 +2,488 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Md Shazid Islam</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Md Shazid Islam</title>
+<meta name="description" content="Md Shazid Islam, Ph.D. candidate at UC Riverside. Vision-language models, uncertainty, and annotation-efficient learning for medical imaging.">
+<meta property="og:title" content="Md Shazid Islam">
+<meta property="og:description" content="Vision-language models, uncertainty, and annotation-efficient learning for medical imaging.">
+<meta property="og:image" content="https://shazidaraf.github.io/assets/profile.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
 <style>
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        margin: 0;
-        background: #f9f9f9;
-        color: #222;
-    }
+:root {
+  --bg: #EDF1F4;
+  --surface: #F8FAFB;
+  --ink: #17232E;
+  --muted: #4C5B68;
+  --line: #C9D3DB;
+  --contour: #0E7C93;
+  --mask: #B4336F;
+  --mask-soft: rgba(180, 51, 111, 0.10);
+  --contour-soft: rgba(14, 124, 147, 0.10);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F171E;
+    --surface: #16212A;
+    --ink: #E3EAF0;
+    --muted: #9AAAB7;
+    --line: #2A3946;
+    --contour: #4CC3DA;
+    --mask: #E57AAE;
+    --mask-soft: rgba(229, 122, 174, 0.14);
+    --contour-soft: rgba(76, 195, 218, 0.12);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F171E;
+  --surface: #16212A;
+  --ink: #E3EAF0;
+  --muted: #9AAAB7;
+  --line: #2A3946;
+  --contour: #4CC3DA;
+  --mask: #E57AAE;
+  --mask-soft: rgba(229, 122, 174, 0.14);
+  --contour-soft: rgba(76, 195, 218, 0.12);
+}
 
-    /* Layout */
-    .container {
-        display: flex;
-        max-width: 1200px;
-        margin: auto;
-        padding: 20px;
-    }
-    .sidebar {
-        width: 280px;
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        height: fit-content;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        position: sticky;
-        top: 20px;
-    }
-    .content {
-        flex: 1;
-        margin-left: 30px;
-    }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+}
+a { color: var(--contour); text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--contour); outline-offset: 3px; border-radius: 4px; }
+img, video { display: block; max-width: 100%; }
 
-    .profile-photo {
-        width: 160px;
-        height: 160px;
-        border-radius: 50%;
-        object-fit: cover;
-        display: block;
-        margin: 0 auto 20px auto;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 
-    h1 { font-size: 32px; margin-bottom: 5px; }
-    h2 { margin-top: 40px; border-bottom: 2px solid #ddd; padding-bottom: 5px; }
-    h3 { margin-top: 15px; }
+/* Top bar */
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 16px; }
+.brand { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; color: var(--ink); text-decoration: none; font-size: 18px; }
+.topbar nav { display: flex; gap: 22px; }
+.topbar nav a { color: var(--muted); text-decoration: none; font-size: 15px; }
+.topbar nav a:hover { color: var(--ink); }
 
-    a { color: #0077cc; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+/* Hero */
+.hero { padding: 72px 0 56px; }
+.hero .wrap { display: grid; grid-template-columns: 1.25fr 1fr; gap: 48px; align-items: center; }
+.hero h1 {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: clamp(44px, 7vw, 84px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: 0 0 22px;
+}
+.hero .lede { font-size: 21px; line-height: 1.5; max-width: 34ch; margin: 0 0 14px; }
+.hero .meta { color: var(--muted); margin: 0 0 28px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 18px; border-radius: 999px;
+  font-weight: 700; font-size: 15px; text-decoration: none;
+  border: 1.5px solid var(--ink); color: var(--ink);
+}
+.btn.primary { background: var(--ink); color: var(--bg); }
+.btn:hover { background: var(--contour); border-color: var(--contour); color: #fff; text-decoration: none; }
 
-    .section { margin-bottom: 40px; }
+/* The one memorable thing: a segmentation contour drawn around the portrait */
+.portrait { position: relative; width: min(400px, 100%); aspect-ratio: 1; justify-self: center; }
+.portrait img {
+  position: absolute; inset: 12%;
+  width: 76%; height: 76%;
+  object-fit: cover;
+  border-radius: 46% 54% 52% 48% / 50% 46% 54% 50%;
+}
+.portrait svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.contour {
+  fill: var(--contour-soft);
+  stroke: var(--contour);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: draw 2.4s cubic-bezier(.6,.05,.3,1) .3s forwards;
+}
+.handle { fill: var(--surface); stroke: var(--contour); stroke-width: 2; opacity: 0; animation: pop .3s ease-out forwards; }
+.tag {
+  position: absolute; right: -4px; bottom: 9%;
+  background: var(--mask); color: #fff;
+  font-size: 13px; font-weight: 700;
+  padding: 5px 10px; border-radius: 6px;
+  opacity: 0; animation: pop .4s ease-out 2.6s forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes pop { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
 
-    .pub-title { font-weight: 600; }
-    .pub-authors { font-style: italic; }
-    .pub-venue { color: #555; }
+/* News */
+.news { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--surface); }
+.news ul { list-style: none; margin: 0; padding: 18px 0; display: grid; gap: 8px; }
+.news li { display: grid; grid-template-columns: 96px 1fr; gap: 16px; }
+.news time { color: var(--muted); font-variant-numeric: tabular-nums; }
 
-    ul { margin-top: 5px; }
+/* Sections */
+section.block { padding: 72px 0 24px; }
+.block h2 {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 700; font-size: clamp(30px, 4vw, 42px);
+  letter-spacing: -0.02em; margin: 0 0 8px;
+}
+.block .intro { color: var(--muted); max-width: 62ch; margin: 0 0 40px; }
+
+/* Projects */
+.project {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 36px;
+  align-items: start; padding: 36px 0; border-top: 1px solid var(--line);
+}
+.project h3 { font-family: "Bricolage Grotesque", sans-serif; font-size: 25px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.01em; }
+.project .when { color: var(--muted); font-size: 15px; margin: 0 0 14px; }
+.project p { margin: 0 0 12px; max-width: 60ch; }
+.project ul { margin: 0 0 14px; padding-left: 20px; }
+.project li { margin-bottom: 6px; }
+.links { display: flex; flex-wrap: wrap; gap: 16px; font-weight: 700; font-size: 15px; }
+.venue { display: inline-block; background: var(--mask-soft); color: var(--mask); font-weight: 700; font-size: 13px; padding: 2px 9px; border-radius: 5px; margin-left: 6px; vertical-align: 3px; }
+
+/* Media slot: shows the GIF/video when the file exists, a placeholder otherwise */
+.media {
+  position: relative; aspect-ratio: 16 / 10; margin: 0;
+  border-radius: 14px; overflow: hidden;
+  background: var(--surface); border: 1.5px dashed var(--line);
+}
+.media img, .media video { width: 100%; height: 100%; object-fit: cover; }
+.media .ph {
+  position: absolute; inset: 0; display: none;
+  place-content: center; text-align: center; gap: 6px; padding: 20px;
+  color: var(--muted); font-size: 14px;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: center;
+}
+.media .ph strong { color: var(--ink); font-size: 16px; }
+.media .ph code { background: var(--bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+.media.empty .ph { display: grid; }
+.media.empty img, .media.empty video { display: none; }
+
+.more { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; padding: 32px 0 0; border-top: 1px solid var(--line); }
+.more h4 { font-family: "Bricolage Grotesque", sans-serif; font-size: 19px; margin: 0 0 4px; }
+.more .when { color: var(--muted); font-size: 14px; margin: 0 0 8px; }
+.more p { margin: 0; font-size: 16px; }
+
+/* Publications */
+.pubs { list-style: none; padding: 0; margin: 0; }
+.pubs li { padding: 18px 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 64px 1fr; gap: 18px; }
+.pubs .yr { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; color: var(--muted); font-size: 18px; }
+.pubs .title { font-weight: 700; display: block; margin-bottom: 2px; }
+.pubs .authors { color: var(--muted); font-size: 15px; display: block; }
+.pubs .authors b { color: var(--ink); }
+.pubs .links { margin-top: 6px; }
+
+/* About grid */
+.about { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.about h3 { font-family: "Bricolage Grotesque", sans-serif; font-size: 21px; margin: 0 0 12px; }
+.about ul { list-style: none; padding: 0; margin: 0 0 32px; }
+.about li { padding: 10px 0; border-top: 1px solid var(--line); }
+.about li span { color: var(--muted); display: block; font-size: 15px; }
+
+footer { padding: 64px 0 48px; color: var(--muted); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 24px; }
+
+@media (max-width: 860px) {
+  .hero .wrap, .project, .about { grid-template-columns: 1fr; }
+  .hero { padding: 40px 0 32px; }
+  .portrait { width: min(300px, 80%); order: -1; }
+  .more { grid-template-columns: 1fr; }
+  .topbar nav { display: none; }
+  .project { gap: 20px; }
+}
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  .wrap { padding: 0 16px; }
+  .news li { grid-template-columns: 1fr; gap: 0; }
+  .pubs li { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .contour { animation: none; stroke-dashoffset: 0; }
+  .handle, .tag { animation: none; opacity: 1; }
+}
 </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h2>Md Shazid Islam</h2>
-        <img src="profile_pic.jpg" alt="Profile Photo" class="profile-photo">
-        <p><strong>Ph.D. Candidate</strong><br>
-        Electrical & Computer Engineering<br>
-        UC Riverside</p>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top">Md Shazid Islam</a>
+    <nav aria-label="Sections">
+      <a href="#research">Research</a>
+      <a href="#publications">Publications</a>
+      <a href="#about">About</a>
+      <a href="Md_Shazid_Islam_Resume.pdf">Resume</a>
+    </nav>
+  </div>
+</header>
 
-        <p>Email: <a href="mailto:misla048@ucr.edu">misla048@ucr.edu</a><br>
-
-        <p>
-            <a href="Md_Shazid_Islam_Resume.pdf" download="Md_Shazid_Islam_Resume.pdf">Resume</a><br>
-            <a href="https://github.com/ShazidAraf">GitHub</a><br>
-            <a href="https://www.linkedin.com/in/md-shazid-islam-1b0993121/">LinkedIn</a><br>
-            <a href="https://scholar.google.com/citations?user=0kXrLjMAAAAJ&hl=en">Google Scholar</a><br>
-            
-        </p>
-        
-        <p><strong>Research Areas</strong></p>
-        <ul>
-            <li> Computer Vision</li>
-            <li> Deep Learning</li>
-            <li> Vision Language Models</li>
-            <li>Domain Adaptation</li>
-            <li>Active Learning</li>
-            <li>Biomedical Image Analysis</li>
-            <li>Multimodal Learning</li>
-        </ul>
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1>Md Shazid Islam</h1>
+        <p class="lede">I build vision-language models that know where their answers come from, and learning systems that need far fewer labels.</p>
+        <p class="meta">Ph.D. candidate, Electrical and Computer Engineering, UC Riverside. Advised by Amit K. Roy-Chowdhury in the Vision and Learning Group.</p>
+        <div class="actions">
+          <a class="btn primary" href="Md_Shazid_Islam_Resume.pdf" download="Md_Shazid_Islam_Resume.pdf">Download resume</a>
+          <a class="btn" href="https://scholar.google.com/citations?user=0kXrLjMAAAAJ&amp;hl=en">Google Scholar</a>
+          <a class="btn" href="https://github.com/ShazidAraf">GitHub</a>
+          <a class="btn" href="https://www.linkedin.com/in/md-shazid-islam-1b0993121/">LinkedIn</a>
+          <a class="btn" href="mailto:misla048@ucr.edu">Email</a>
+        </div>
+      </div>
+      <div class="portrait" aria-hidden="true">
+        <img src="assets/profile.jpg" alt="">
+        <svg viewBox="0 0 400 400">
+          <path class="contour" d="M200 30 C 290 26, 362 92, 370 186 C 378 282, 318 366, 214 372 C 112 378, 38 318, 32 214 C 26 116, 104 34, 200 30 Z"/>
+          <circle class="handle" cx="200" cy="30" r="6" style="animation-delay:.9s"/>
+          <circle class="handle" cx="370" cy="186" r="6" style="animation-delay:1.4s"/>
+          <circle class="handle" cx="214" cy="372" r="6" style="animation-delay:1.9s"/>
+          <circle class="handle" cx="32" cy="214" r="6" style="animation-delay:2.3s"/>
+        </svg>
+        <span class="tag">researcher, 0.99</span>
+      </div>
     </div>
+  </section>
 
-    <!-- Content Area -->
-    <div class="content">
-
-        <h1>About Me</h1>
-        <p>            
-            I am a Ph.D. candidate specializing in machine learning, deep learning,
-            and computer vision, with a strong focus on biomedical image analysis. 
-            My research develops data-efficient and reliable medical AI through domain adaptation,
-            vision–language models, and active learning—enabling systems that adapt to domain shifts
-            and significantly reduce annotation burdens, particularly for segmentation tasks. I also 
-            build segmentation, tracking, and visualization pipelines for high-dimensional microscopy
-            data, and have experience with GANs, GNNs, transformers, multimodal fusion, federated
-            learning, human pose estimation, and spatio-temporal tracking.
-        </p>
-
-        <!-- Education -->
-        <h2>Education</h2>
-        <ul>
-            <li><strong>Ph.D., University of California Riverside (2020–Present)</strong><br>
-                Electrical & Computer Engineering <br>
-                <a href="https://vcg.ece.ucr.edu/">UCR Vision and Learning Group</a><br>
-                Advisor: Amit K. Roy-Chowdhury
-            </li>
-            <li><strong>M.Sc., Bangladesh University of Engineering and Technology (2017–2020)</strong> <br>
-                Electrical & Electronic Engineering<br>
-                Advisor: S.M. Mahbubur Rahman
-            </li>
-            <li><strong>B.Sc., Bangladesh University of Engineering and Technology (2013–2017)</strong> <br>
-                Electrical & Electronic Engineering <br>
-                Advisor: Mohammad Ariful Haque
-            </li>
-        </ul>
-
-        <!-- Research Projects -->
-        <h2>Selected Research Projects</h2>
-        
-        <h3>Online Domain Adaptive Medical Image Segmentation (ODES)</h3>
-        <p>
-        A source-free, single-pass online domain adaptation framework designed for medical image segmentation under severe domain shift. 
-        Integrates expert-guided active learning, noisy pseudo-label pruning, and diversity-aware sample selection to minimize annotation cost 
-        while outperforming modern test-time adaptation baselines.<br>
-        <a href="https://papers.miccai.org/miccai-2025/paper/5017_paper.pdf" target="_blank">paper</a> -
-        <a href="https://github.com/ShazidAraf/ODES" target="_blank">code</a>
-        
-        </p>
-        
-        <h3>Active Learning via Vision–Language Models (LINGUAL)</h3>
-        <p>
-        A language-guided annotation strategy that replaces pixel-level corrections with natural-language instructions. 
-        These instructions are translated into executable segmentation refinement programs through large language models, reducing annotation time by ~80% 
-        while maintaining or surpassing state-of-the-art active learning baselines.<br>
-        <a href="https://arxiv.org/abs/2511.14028" target="_blank">pre-print</a>
-        </p>
-        
-        
-        <h3>Bio-Image Analysis (3D + Time)</h3>
-        <ul>
-            <li>3D segmentation, reconstruction, and registration of volumetric plant cell datasets acquired via CLSM microscopy.</li>
-            <li>Designing a deep spatio-temporal tracking system using Graph Neural Networks (GNNs) for cell lineage reconstruction and division detection.</li>
-            <li>3D segmentation and morphological analysis of Drosophila wing disc imagery for developmental biology applications.</li>
-        </ul>
-        <a href="https://ieeexplore.ieee.org/abstract/document/10820545" target="_blank">paper</a>  — 
-        <a href="https://github.com/ShazidAraf/DEGAST3D" target="_blank">code</a>
-        
-        <h3>Agentic Medical Report Generation (Ongoing)</h3>
-        <p>
-        Building an agentic report-generation system for chest X-rays that performs stepwise, uncertainty-aware reasoning grounded directly in visual evidence. 
-        The pipeline distinguishes ambiguous findings from confident impressions and dynamically adapts its reasoning trajectory to generate more reliable clinical reports.
-        </p>
-        
-        <h3>Gait Phase Analysis</h3>
-        <p>
-        Developed a novel sEMG-driven gait phase classification algorithm for DNS, UPS, and WAK locomotion modes, targeting robust real-time locomotion analysis. <br>
-        <a href="https://link.springer.com/chapter/10.1007/978-981-97-3562-4_29" target="_blank">paper</a>
-        </p>
-        
-        <h3>Music-to-Dance Synthesis (CNN–LSTM–MDN + GAN)</h3>
-        <p>
-        A multimodal generative framework that learns music-conditioned human motion using a CNN–LSTM–MDN architecture for rhythmic pose generation 
-        and a Pix2pixHD GAN for high-fidelity dance synthesis. Demonstrated superior style retention across Ballet, Rumba, Cha-Cha, Tango, and Waltz. <br>
-        <a href="https://link.springer.com/article/10.1007/s11042-025-21123-3" target="_blank">paper</a> —
-        <a href="https://youtu.be/ATaC7Cj0UIA" target="_blank">video</a>
-        </p>
-
-        
-        <h3>BRIAR</h3>
-        <p>
-        Developed modules for multi-person tracking under occlusion, silhouette segmentation, and GAIT/ReID-based identity recognition within the BRIAR dataset pipeline.
-        </p>
-        
-        <h3>Asynchronous Federated Learning</h3>
-        <p>
-        Designed a delay-aware asynchronous FL framework addressing client stragglers via buffer diversification and contribution-weighted aggregation, 
-        improving convergence stability under heterogeneous system conditions.
-        </p>
-
-        <!-- Publications -->
-        <h2>Selected Publications</h2>
-        
-        <ul>
-        
-            <li>
-                <span class="pub-title"><strong>Md Shazid Islam</strong>, Sayak Nag, Arindam Dutta, Miraj Ahmed, Fahim Faisal Niloy, Shreyangshu Bera, Amit K. Roy Chowdhury, 
-                <em>“ODES: Online Domain Adaptation with Expert Guidance for Medical Image Segmentation”</em></span><br>
-                <span class="pub-venue">MICCAI 2025</span> —
-                <a href="https://papers.miccai.org/miccai-2025/paper/5017_paper.pdf" target="_blank">paper</a> <a href="https://github.com/ShazidAraf/ODES" target="_blank">code</a>
-            </li>
-        
-            <li>
-                <span class="pub-title"><strong>Md Shazid Islam</strong>, Arindam Dutta, Calvin-Khang Ta, Kevin Rodriguez, Christian Michael, Mark Alber, G. Venugopala Reddy, Amit K. Roy Chowdhury,
-                <em>“DEGAST3D: Learning Deformable 3D Graph Similarity to Track Plant Cells in Unregistered Time Lapse Images”</em></span><br>
-                <span class="pub-venue">IEEE T-CBB, 2025</span> —
-                <a href="https://ieeexplore.ieee.org/abstract/document/10820545" target="_blank">paper</a> <a href="https://github.com/ShazidAraf/DEGAST3D" target="_blank">code</a>
-            </li>
-        
-            <li>
-                <span class="pub-title"><strong>Md Shazid Islam</strong>, Shreyangshu Bera, Sudipta Paul, Amit K. Roy Chowdhury,
-                <em>“LINGUAL: Language-INtegrated GUidance in Active Learning for Medical Image Segmentation”</em></span><br>
-                <span class="pub-venue">Under Review</span> —
-                <a href="https://arxiv.org/abs/2511.14028" target="_blank">pre-print</a>
-            </li>
-        
-            <li>
-                <span class="pub-title"><strong>Md Shazid Islam</strong>, SM Mahbubur Rahman,
-                <em>“Synthesis of Dance by Learning Body Gestures from Music”</em></span><br>
-                <span class="pub-venue">Multimedia Tools & Applications, 2025</span> —
-                <a href="https://link.springer.com/article/10.1007/s11042-025-21123-3" target="_blank">paper</a> —
-                <a href="https://youtu.be/ATaC7Cj0UIA" target="_blank">video</a>
-            </li>
-        
-            <li>
-                <span class="pub-title"><strong>Md Shazid Islam</strong>, M Yashwanth, Xiangyu Chang, Anirban Chakraborty, Srikanth Krishnamurthy, Amit Roy-Chowdhury,
-                <em>“DAAFL: Delay Aware Asynchronous Federated Learning”</em></span><br>
-                <span class="pub-venue">Under Review</span>
-            </li>
-        
-            <li>
-                <span class="pub-title">Md Sanzid Bin Hossain, <strong>Md Shazid Islam</strong>, Md Saad Ul Haque, Md Saydur Rahman,
-                <em>“Gait Phase Classification from sEMG in Multiple Locomotion Mode Using Deep Learning”</em></span><br>
-                <span class="pub-venue">9th International Congress on ICT, London, 2024</span> —
-                <a href="https://link.springer.com/chapter/10.1007/978-981-97-3562-4_29" target="_blank">paper</a>
-            </li>
-        
-            <li>
-                <span class="pub-title"><strong>Md Shazid Islam</strong>, ASM Jahid Hasan, Md Saydur Rahman, Jubair Yusuf, Md Saiful Islam Sajal, Farhana Akter Tumpa,
-                <em>“Location Agnostic Source-Free Domain Adaptive Learning to Predict Solar Power Generation”</em></span><br>
-                <span class="pub-venue">IEEE Energy Technologies for Future Grids, Wollongong, 2023</span> —
-                <a href="https://ieeexplore.ieee.org/abstract/document/10407265" target="_blank">paper</a>
-            </li>
-        
-            <li>
-                <span class="pub-title">Md Saiful Islam Sajol, ASM Jahid Hasan, <strong>Md Shazid Islam</strong>, Md Saydur Rahman,
-                <em>“A ConvNeXt V2 Approach to Document Image Analysis: Enhancing High-Accuracy Classification”</em></span><br>
-                <span class="pub-venue">IEEE Conference on Information Technology and Data Science, Debrecen, 2024</span> —
-                <a href="https://ieeexplore.ieee.org/abstract/document/10791343" target="_blank">paper</a>
-            </li>
-        
-            <li>
-                <span class="pub-title">Md Saiful Islam Sajol, ASM Jahid Hasan, <strong>Md Shazid Islam</strong>, Md Saydur Rahman,
-                <em>“Transforming Social Media Analysis: TweetEval Benchmarking with Advanced Transformer Models”</em></span><br>
-                <span class="pub-venue">ISMSIT, Ankara, 2024</span> —
-                <a href="https://ieeexplore.ieee.org/abstract/document/10757178" target="_blank">paper</a>
-            </li>
-        
-        </ul>
-
-
-
+  <section class="news" aria-label="News">
+    <div class="wrap">
+      <ul>
+        <li><time datetime="2026-10">Oct 2026</time><span>LINGUAL accepted at <strong>WACV 2027</strong>.</span></li>
+        <li><time datetime="2026-08">Aug 2026</time><span>Started work on word-level uncertainty for 3D vision-language models.</span></li>
+        <li><time datetime="2025-09">Sep 2025</time><span>Presented ODES at <strong>MICCAI 2025</strong>, supported by the MICCAI NIH registration grant.</span></li>
+      </ul>
     </div>
-</div>
+  </section>
+
+  <section class="block" id="research">
+    <div class="wrap">
+      <h2>Research</h2>
+      <p class="intro">Medical images are expensive to label and risky to get wrong. My work cuts the labeling cost and makes model outputs easier to check.</p>
+
+      <article class="project">
+        <figure class="media">
+          <img src="assets/media/lingual.gif" alt="LINGUAL refining a segmentation mask from a typed instruction" loading="lazy" onerror="this.parentElement.classList.add('empty')">
+          <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/lingual.gif</code></span></div>
+        </figure>
+        <div>
+          <h3>LINGUAL: label correction by plain language <span class="venue">WACV 2027</span></h3>
+          <p class="when">March 2025 to December 2025</p>
+          <p>Experts fix segmentation masks by typing what is wrong instead of redrawing pixels. An LLM turns each instruction into calls to EXPAND and SHRINK refinement tools.</p>
+          <ul>
+            <li>Cuts annotation interaction cost by up to about 25%.</li>
+            <li>Matches or beats manual correction under domain shift and limited supervision.</li>
+          </ul>
+          <div class="links"><a href="https://arxiv.org/abs/2511.14028">Preprint</a></div>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="media">
+          <img src="assets/media/uncertainty-3d-vlm.gif" alt="Word-level uncertainty map over a 3D CT scan" loading="lazy" onerror="this.parentElement.classList.add('empty')">
+          <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/uncertainty-3d-vlm.gif</code></span></div>
+        </figure>
+        <div>
+          <h3>Uncertainty for 3D vision-language models</h3>
+          <p class="when">August 2026 to present</p>
+          <p>A training-free method that links each word of a generated CT report to the parts of the scan that support or contradict it.</p>
+          <ul>
+            <li>Occludes blocks of a 3D ViT token grid to measure how each region changes each word.</li>
+            <li>Pools the evidence into word-level and scan-level uncertainty, then marks a small 3D region for a radiologist to review first.</li>
+            <li>Runs on 900+ CT volumes from AbdomenAtlas 3.0 with NV-Reason-CT on a SLURM GPU cluster.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="media">
+          <img src="assets/media/radiology-report.gif" alt="Grounded chest X-ray report generation" loading="lazy" onerror="this.parentElement.classList.add('empty')">
+          <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/radiology-report.gif</code></span></div>
+        </figure>
+        <div>
+          <h3>Grounded radiology report generation</h3>
+          <p class="when">January 2026 to May 2026</p>
+          <p>Fine-tuned LLaVA-Med 1.5 on MIMIC-CXR to write chest X-ray reports tied to image evidence.</p>
+          <ul>
+            <li>Multi-GPU training with supervised fine-tuning and preference optimization (DPO, GRPO).</li>
+            <li>Image-grounded reasoning reduces hallucinated findings and improves spatial accuracy.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="media">
+          <img src="assets/media/odes.gif" alt="ODES adapting a segmentation model to a new scanner" loading="lazy" onerror="this.parentElement.classList.add('empty')">
+          <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/odes.gif</code></span></div>
+        </figure>
+        <div>
+          <h3>ODES: adapting to new scanners on the fly <span class="venue">MICCAI 2025</span></h3>
+          <p class="when">July 2023 to June 2024</p>
+          <p>Source-free, single-pass online domain adaptation for medical image segmentation. It asks an expert only about the images that matter and stores nothing extra.</p>
+          <ul>
+            <li>Image pruning plus a diversity-aware rule decide which images get labeled.</li>
+            <li>+7.7% on average over test-time adaptation across several medical datasets.</li>
+          </ul>
+          <div class="links">
+            <a href="https://papers.miccai.org/miccai-2025/paper/5017_paper.pdf">Paper</a>
+            <a href="https://github.com/ShazidAraf/ODES">Code</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="media">
+          <img src="assets/media/degast3d.gif" alt="Tracking plant cells across 3D time-lapse microscopy" loading="lazy" onerror="this.parentElement.classList.add('empty')">
+          <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/degast3d.gif</code></span></div>
+        </figure>
+        <div>
+          <h3>DEGAST3D: tracking cells in 3D time-lapse <span class="venue">IEEE TCBB 2025</span></h3>
+          <p class="when">June 2021 to June 2022</p>
+          <p>A deformable 3D graph neural network that tracks densely packed plant cells in unregistered time-lapse microscopy.</p>
+          <ul>
+            <li>+6.40% F1 over the previous best for tracking.</li>
+            <li>3D registration and division detection: +14.78% F1 over 2D methods.</li>
+          </ul>
+          <div class="links">
+            <a href="https://ieeexplore.ieee.org/abstract/document/10820545">Paper</a>
+            <a href="https://github.com/ShazidAraf/DEGAST3D">Code</a>
+          </div>
+        </div>
+      </article>
+
+      <div class="more">
+        <div>
+          <h4>Music to dance</h4>
+          <p class="when">2019 to 2020</p>
+          <p>A CNN-LSTM mixture density network turns music into rhythm-aligned motion, rendered to video with a Pix2pixHD GAN. <a href="https://youtu.be/ATaC7Cj0UIA">Watch the video</a></p>
+        </div>
+        <div>
+          <h4>Multi-person tracking</h4>
+          <p class="when">2022 to 2023</p>
+          <p>ByteTrack association with person re-identification and gait analysis to keep identities across frames.</p>
+        </div>
+        <div>
+          <h4>Asynchronous federated learning</h4>
+          <p class="when">2024 to 2025</p>
+          <p>A delay-aware framework that handles slow clients with buffer diversification and contribution-based weighting.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="publications">
+    <div class="wrap">
+      <h2>Publications</h2>
+      <p class="intro">Newest first. <a href="https://scholar.google.com/citations?user=0kXrLjMAAAAJ&amp;hl=en">Full list on Google Scholar</a>.</p>
+      <ol class="pubs" reversed>
+        <li><span class="yr">2027</span><div>
+          <span class="title">LINGUAL: Language-INtegrated GUidance in Active Learning for Medical Image Segmentation <span class="venue">WACV 2027</span></span>
+          <span class="authors"><b>Md Shazid Islam</b>, Shreyangshu Bera, Sudipta Paul, Amit K. Roy-Chowdhury</span>
+          <div class="links"><a href="https://arxiv.org/abs/2511.14028">Preprint</a></div>
+        </div></li>
+        <li><span class="yr">2025</span><div>
+          <span class="title">ODES: Online Domain Adaptation with Expert Guidance for Medical Image Segmentation <span class="venue">MICCAI 2025</span></span>
+          <span class="authors"><b>Md Shazid Islam</b>, Sayak Nag, Arindam Dutta, Miraj Ahmed, Fahim Faisal Niloy, Shreyangshu Bera, Amit K. Roy-Chowdhury</span>
+          <div class="links"><a href="https://papers.miccai.org/miccai-2025/paper/5017_paper.pdf">Paper</a><a href="https://github.com/ShazidAraf/ODES">Code</a></div>
+        </div></li>
+        <li><span class="yr">2025</span><div>
+          <span class="title">Synthesis of Dance by Learning Body Gestures from Music <span class="venue">Multimedia Tools and Applications</span></span>
+          <span class="authors"><b>Md Shazid Islam</b>, SM Mahbubur Rahman</span>
+          <div class="links"><a href="https://link.springer.com/article/10.1007/s11042-025-21123-3">Paper</a><a href="https://youtu.be/ATaC7Cj0UIA">Video</a></div>
+        </div></li>
+        <li><span class="yr">2025</span><div>
+          <span class="title">DEGAST3D: Learning Deformable 3D Graph Similarity to Track Plant Cells in Unregistered Time Lapse Images <span class="venue">IEEE TCBB</span></span>
+          <span class="authors"><b>Md Shazid Islam</b>, Arindam Dutta, Calvin-Khang Ta, Kevin Rodriguez, Christian Michael, Mark Alber, G. Venugopala Reddy, Amit K. Roy-Chowdhury</span>
+          <div class="links"><a href="https://ieeexplore.ieee.org/abstract/document/10820545">Paper</a><a href="https://github.com/ShazidAraf/DEGAST3D">Code</a></div>
+        </div></li>
+        <li><span class="yr">2024</span><div>
+          <span class="title">A ConvNeXt V2 Approach to Document Image Analysis: Enhancing High-Accuracy Classification <span class="venue">IEEE CITDS</span></span>
+          <span class="authors">Md Saiful Islam Sajol, ASM Jahid Hasan, <b>Md Shazid Islam</b>, Md Saydur Rahman</span>
+          <div class="links"><a href="https://ieeexplore.ieee.org/abstract/document/10791343">Paper</a></div>
+        </div></li>
+        <li><span class="yr">2024</span><div>
+          <span class="title">Transforming Social Media Analysis: TweetEval Benchmarking with Advanced Transformer Models <span class="venue">ISMSIT</span></span>
+          <span class="authors">Md Saiful Islam Sajol, ASM Jahid Hasan, <b>Md Shazid Islam</b>, Md Saydur Rahman</span>
+          <div class="links"><a href="https://ieeexplore.ieee.org/abstract/document/10757178">Paper</a></div>
+        </div></li>
+        <li><span class="yr">2024</span><div>
+          <span class="title">Gait Phase Classification from sEMG in Multiple Locomotion Mode Using Deep Learning <span class="venue">ICICT London</span></span>
+          <span class="authors">Md Sanzid Bin Hossain, <b>Md Shazid Islam</b>, Md Saad Ul Haque, Md Saydur Rahman</span>
+          <div class="links"><a href="https://link.springer.com/chapter/10.1007/978-981-97-3562-4_29">Paper</a></div>
+        </div></li>
+        <li><span class="yr">2023</span><div>
+          <span class="title">Location Agnostic Source-Free Domain Adaptive Learning to Predict Solar Power Generation <span class="venue">IEEE ETFG</span></span>
+          <span class="authors"><b>Md Shazid Islam</b>, ASM Jahid Hasan, Md Saydur Rahman, Jubair Yusuf, Md Saiful Islam Sajal, Farhana Akter Tumpa</span>
+          <div class="links"><a href="https://ieeexplore.ieee.org/abstract/document/10407265">Paper</a></div>
+        </div></li>
+        <li><span class="yr">Review</span><div>
+          <span class="title">SALT: Spectral Instability based Active Learning for Tiny Object Detection</span>
+          <span class="authors">Shreyangshu Bera, <b>Md Shazid Islam</b>, Saketh Bachu, B. S. Manjunath, Amit Roy-Chowdhury</span>
+          <div class="links"><a href="https://openreview.net/forum?id=FQSlSwPPsN">Preprint</a></div>
+        </div></li>
+        <li><span class="yr">Review</span><div>
+          <span class="title">DAAFL: Delay Aware Asynchronous Federated Learning</span>
+          <span class="authors"><b>Md Shazid Islam</b>, M Yashwanth, Xiangyu Chang, Anirban Chakraborty, Srikanth Krishnamurthy, Amit Roy-Chowdhury</span>
+        </div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" id="about">
+    <div class="wrap">
+      <h2>About</h2>
+      <p class="intro">I fine-tune VLMs and LLMs with preference optimization, build LLM pipelines that call executable tools, and design learning methods for segmentation, domain adaptation, and active learning. I take problems from formulation to experiments to open-source code.</p>
+      <div class="about">
+        <div>
+          <h3>Education</h3>
+          <ul>
+            <li><strong>Ph.D., Electrical and Computer Engineering</strong><span>UC Riverside, 2020 to present. Advisor: Amit K. Roy-Chowdhury</span></li>
+            <li><strong>M.Sc., Electrical and Electronic Engineering</strong><span>BUET, 2017 to 2020. Advisor: S.M. Mahbubur Rahman</span></li>
+            <li><strong>B.Sc., Electrical and Electronic Engineering</strong><span>BUET, 2013 to 2017. Advisor: Mohammad Ariful Haque</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Leadership and honors</h3>
+          <ul>
+            <li><strong>Team lead, LLNL Data Science Challenge</strong><span>2026. Led a four-member team building an LLM-driven agentic workflow for defect detection in materials.</span></li>
+            <li><strong>MICCAI NIH Registration Grant</strong><span>2025</span></li>
+            <li><strong>Dean's Distinguished Fellowship</strong><span>UC Riverside</span></li>
+            <li><strong>Dean's List and Merit Scholarships</strong><span>Department of EEE, BUET</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Riverside, California. <a href="mailto:misla048@ucr.edu">misla048@ucr.edu</a></span>
+    <span>Updated October 2026</span>
+  </div>
+</footer>
 
 </body>
 </html>
