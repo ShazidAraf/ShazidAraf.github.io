@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEGAST3D: Deformable 3D Graph Similarity for Cell Tracking</title>
+<meta name="description" content="DEGAST3D (IEEE TCBB 2025): learning deformable 3D graph similarity to track plant cells and detect divisions in unregistered time-lapse microscopy.">
+<meta property="og:title" content="DEGAST3D: Learning Deformable 3D Graph Similarity to Track Plant Cells in Unregistered Time Lapse Images">
+<meta property="og:description" content="IEEE TCBB 2025. 3D segmentation, 3D registration, learned graph matching, and cell division detection for densely packed plant cells.">
+<meta property="og:image" content="https://shazidaraf.github.io/DEGAST3D/assets/fig3_workflow.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/project.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="in">
+    <a href="../">Md Shazid Islam</a>
+    <nav aria-label="Sections">
+      <a href="#problem">Problem</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#code">Code</a>
+      <a href="#citation">Citation</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="col head">
+    <span class="venue">IEEE TCBB 2025</span>
+    <h1>DEGAST3D</h1>
+    <p class="full">Learning Deformable 3D Graph Similarity to Track Plant Cells in Unregistered Time Lapse Images</p>
+    <p class="authors"><b>Md Shazid Islam</b>, Arindam Dutta, Calvin-Khang Ta, Kevin Rodriguez, Christian Michael, Mark Alber, G. Venugopala Reddy, Amit K. Roy-Chowdhury</p>
+    <p class="affil">University of California, Riverside</p>
+    <div class="btns">
+      <a class="btn primary" href="https://ieeexplore.ieee.org/abstract/document/10820545">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6V2zm8 1.5V8h4.5L14 3.5zM8 12h8v1.6H8V12zm0 3.4h8V17H8v-1.6zm0-6.8h4v1.6H8V8.6z"/></svg>Paper</a>
+      <a class="btn" href="https://github.com/ShazidAraf/DEGAST3D">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>Code on GitHub</a>
+      <a class="btn" href="#citation">BibTeX</a>
+    </div>
+  </div>
+
+  <div class="wide">
+    <figure class="hero-fig" style="max-width:980px">
+      <img src="assets/overview.gif" alt="Animated overview of DEGAST3D: time-lapse 3D microscopy, the workflow, the graph similarity model, and matched cells across time" width="960" height="600">
+    </figure>
+  </div>
+
+  <div class="col">
+    <p class="tldr">Plant cells are packed tightly in 3D, grow unevenly, and divide. DEGAST3D tracks each one across time-lapse microscopy. It describes every cell by the 3D graph of its neighbors and learns which graph in the next time point is the same cell. It also detects which cells divided.</p>
+
+    <section id="problem">
+      <h2>The problem</h2>
+      <p>Biologists image the shoot apical meristem (SAM) of <i>Arabidopsis thaliana</i> with confocal microscopy, in 3D stacks every few hours. To study growth, they need each cell&rsquo;s lineage: where it went and when it divided. This is hard because of several things at once:</p>
+      <ul>
+        <li>Hundreds of cells are densely packed and look alike.</li>
+        <li>Cells grow unevenly and divide along different planes in different layers.</li>
+        <li>Deeper layers are noisy.</li>
+        <li>The plant is moved between imaging sessions, so the stacks are not aligned.</li>
+      </ul>
+      <figure>
+        <img src="assets/fig1_timelapse.png" alt="Grid of microscopy slices: rows are depths in Z, columns are time points" loading="lazy">
+        <figcaption><b>The data.</b> Confocal slices of the SAM. Each row is a depth (Z) and each column is a time point.</figcaption>
+      </figure>
+      <h3>Why 2D tracking fails</h3>
+      <p>Earlier methods track cells slice by slice in 2D. When the tissue tilts between time points, the same slice cuts the same cells at a different angle. The cells then look like different shapes and sizes, and 2D matching breaks.</p>
+      <figure>
+        <img src="assets/fig2_tilt.png" alt="Tilt between two time points changes the 2D cross-section of the same cells" loading="lazy" style="max-width:520px;margin:0 auto">
+        <figcaption><b>Tilt breaks 2D.</b> (a) Outlines of the SAM at two time points after a tilt. (b) The same cells, circled, look different in the 2D cross-section.</figcaption>
+      </figure>
+    </section>
+
+    <section id="method">
+      <h2>How DEGAST3D works</h2>
+      <p>The pipeline works fully in 3D: segment, register, match cells, detect divisions.</p>
+      <figure>
+        <img src="assets/fig3_workflow.png" alt="Workflow: CLSM image stacks, 3D segmentation, 3D registration, then cell pair matching and division detection" loading="lazy">
+        <figcaption><b>Workflow.</b> Image stacks are segmented in 3D, registered between time points, then matched cell by cell, with divisions detected.</figcaption>
+      </figure>
+
+      <h3><span class="step">1</span>3D segmentation</h3>
+      <p>Watershed methods segment each slice separately and lose how a cell continues across slices. DEGAST3D uses Cellpose3D, which predicts gradient maps along X, Y, and Z and returns a full 3D instance for every cell. It also keeps each cell&rsquo;s polygonal shape, which division detection needs later.</p>
+      <figure>
+        <img src="assets/fig4_segmentation.png" alt="Cellpose3D segmentation in a horizontal slice, a vertical slice, and a 3D reconstruction" loading="lazy">
+        <figcaption><b>3D segmentation.</b> (a) Horizontal slice. (b) Vertical slice. (c) 3D reconstruction from the instance masks.</figcaption>
+      </figure>
+
+      <h3><span class="step">2</span>3D registration</h3>
+      <p>Growth and handling shift and rotate the plant between sessions. DEGAST3D first finds a set of high-confidence matching cells, called seed pairs. It takes their point clouds and describes them with FPFH features. RANSAC then estimates the rotation and translation, and it tolerates the few wrong seed pairs. Once aligned, each cell only needs to be searched for in a small neighborhood.</p>
+      <figure>
+        <img src="assets/fig5_registration.png" alt="Registration pipeline: 3D segmentation of two stacks, seed cell pairs, point clouds, RANSAC, rotation and translation" loading="lazy">
+        <figcaption><b>Registration pipeline.</b> Seed pairs give two point clouds. RANSAC on their FPFH features gives the rotation and translation.</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/fig6_overlay.png" alt="Cell borders from two time points before and after registration" loading="lazy" style="max-width:640px;margin:0 auto">
+        <figcaption><b>Before and after.</b> Red and green are cell borders from two time points. (a) Unregistered, they sit apart. (b) After registration, they mostly overlap.</figcaption>
+      </figure>
+
+      <h3><span class="step">3</span>Matching cells with learned 3D graph similarity</h3>
+      <p>Cells grow and deform, and segmentation can split or merge cells. So aligned cells still do not overlap exactly. For each cell, DEGAST3D picks the <b>n</b> nearest cells in the next time point as candidates. That gives a small region of interest.</p>
+      <div class="pair">
+        <figure>
+          <img src="assets/fig7_roi.png" alt="Region of interest: the tracked cell and its candidate matches in the next time point" loading="lazy">
+          <figcaption><b>Candidates.</b> The yellow cell at time t<sub>1</sub>. Blue cells inside the green circle are its candidates at t<sub>2</sub>. The red-bordered cell is the true match.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/fig8_graph.png" alt="A local 3D graph: a central cell connected to its nearest neighbors" loading="lazy">
+          <figcaption><b>Local 3D graph.</b> A cell (red) and its nearest neighbors (yellow), each linked to its k nearest neighbors (k = 5 here).</figcaption>
+        </figure>
+      </div>
+      <p>Each cell is described by a <b>local 3D graph</b>: its centroid plus its nearest neighbors, with every node linked to its k nearest neighbors. Older methods use a flat 2D star graph around the center cell. This 3D graph also captures how the neighbors sit relative to each other, and it stays small enough for fast inference.</p>
+      <p>A <b>graph similarity model</b> takes the 3D coordinates of two graphs. It extracts geometric features for every node and outputs two scores:</p>
+      <ul>
+        <li>A point-to-point similarity for each node pair.</li>
+        <li>An overall similarity for the whole graph.</li>
+      </ul>
+      <p>The candidate with the highest overall score is the match. An extra &ldquo;no match&rdquo; option handles cases where the true cell falls outside the candidate set.</p>
+      <figure>
+        <img src="assets/fig9_gsm.png" alt="Graph similarity model: two graphs pass through geometric feature extractors, a dot product, sigmoid, and fully connected layer to give point-level and graph-level similarity" loading="lazy">
+        <figcaption><b>Graph similarity model.</b> G is a geometric feature extractor. The model outputs point-to-point similarity (y<sub>1</sub>) and overall graph similarity (y<sub>2</sub>).</figcaption>
+      </figure>
+      <p><b>Training with partial labels.</b> The dataset only gives correspondences for some cell pairs. In tightly packed tissue, the neighbors of two matching cells mostly match too. DEGAST3D uses this to create point-to-point labels:</p>
+      <ul>
+        <li>Matching cells with little deformation: all node pairs get label 1.</li>
+        <li>Matching cells with some deformation: only node pairs within a distance threshold get label 1.</li>
+        <li>Non-matching cells: all node pairs get label 0.</li>
+      </ul>
+      <p>Both outputs are trained with binary cross-entropy.</p>
+      <figure>
+        <img src="assets/fig10_supervision.png" alt="How point-to-point supervision is derived by overlaying two local graphs" loading="lazy">
+        <figcaption><b>Point-to-point supervision.</b> Two local graphs are overlaid at their centers. (c) Matching and barely deformed. (d) Matching but deformed, so only close node pairs count. (e) Not matching.</figcaption>
+      </figure>
+      <p>A few cells stay untracked after this step. They are linked using their positions relative to the cells that were tracked.</p>
+      <figure>
+        <img src="assets/fig11_association.png" alt="Untracked cells associated using relative positions of tracked cells" loading="lazy" style="max-width:640px;margin:0 auto">
+        <figcaption><b>Filling gaps.</b> Colored cells are tracked. White cells are linked using their positions relative to the tracked ones.</figcaption>
+      </figure>
+
+      <h3><span class="step">4</span>Detecting cell division</h3>
+      <p>Older detectors assume two daughters together match the mother&rsquo;s area and outline in 2D. That breaks when divisions happen along different planes. DEGAST3D instead compares shapes in 3D. The mother&rsquo;s point cloud and the two candidate daughters&rsquo; combined point cloud are voxelized and subtracted, and a 3D CNN (C3D) scores how well they match. This shape score is combined with local graph similarity to pick mother and daughter pairs.</p>
+      <figure>
+        <img src="assets/fig12_division_model.png" alt="Division detection model: mother and combined daughter point clouds are voxelized, subtracted, and scored by a C3D model" loading="lazy">
+        <figcaption><b>Division detection.</b> Voxelized mother and combined daughters are subtracted, and a C3D model predicts whether it is a true division.</figcaption>
+      </figure>
+    </section>
+
+    <section id="results">
+      <h2>Results</h2>
+      <p>The public confocal dataset has six plants. Each has about 20 time points, 4 hours apart. Each stack has about 200 slices of 512 &times; 512 pixels. Four plants were used for training, one for validation, and one for testing, with cross-validation.</p>
+      <div class="stats">
+        <div class="stat"><b>+6.40%</b><span>F1 for cell matching over the previous best</span></div>
+        <div class="stat"><b>+14.78%</b><span>F1 for division detection</span></div>
+        <div class="stat"><b>+15.38%</b><span>recall for division detection</span></div>
+        <div class="stat"><b>+23.03%</b><span>accuracy on long-term lineages (16+ hours)</span></div>
+      </div>
+      <ul>
+        <li><b>Cell matching:</b> +6.83% precision, +5.96% recall, and +6.40% F1 over the previous best, with both methods using 3D registration.</li>
+        <li><b>Division detection:</b> competitive precision, with +15.38% recall and +14.78% F1.</li>
+        <li><b>3D registration on its own:</b> swapping 2D registration for the proposed 3D registration raises the previous method&rsquo;s matching F1 by 12.25% and its division F1 by 8.36%.</li>
+        <li><b>Long-term lineages:</b> for cells with ground-truth tracks of at least 16 hours, lineage accuracy beats the two compared methods by 23.03% and 12.96%.</li>
+      </ul>
+      <div class="pair">
+        <figure>
+          <img src="assets/fig13_tracking.png" alt="Tracked cells at two time points, matching cells share a color" loading="lazy">
+          <figcaption><b>Tracking.</b> Cells with the same color at two time points are matched.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/fig14_division.png" alt="Detected divisions: mother cells and their daughter cells linked by arrows" loading="lazy">
+          <figcaption><b>Divisions.</b> Colored mother cells (a) linked by arrows to their daughters (b).</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="code">
+      <h2>Code</h2>
+      <p>The code is open source at <a href="https://github.com/ShazidAraf/DEGAST3D">github.com/ShazidAraf/DEGAST3D</a>, with pretrained checkpoints for registration, tracking, graph matching, and division detection.</p>
+      <pre><code>git clone https://github.com/ShazidAraf/DEGAST3D.git
+cd DEGAST3D
+conda env create -f environment.yml
+
+# 1. 3D segmentation (also prepares stack and registration info)
+python segmentation.py --main_dir "data" --plant_idx 6 --segmentation "cellpose"
+
+# 2. Registration, tracking, and division detection for every pair of time points
+python Inference_Tracking_Celldiv.py --main_dir "data" --plant_idx 6 --segmentation "cellpose"</code></pre>
+      <p>Results are saved in <code>results/{segmentation}_{plant_name}/</code>. Any segmentation method can be plugged in.</p>
+    </section>
+
+    <section id="citation">
+      <h2>Citation</h2>
+      <div class="cite">
+        <button class="copy" type="button" data-copy="bib">Copy</button>
+        <pre id="bib"><code>@article{islam2025degast3d,
+  title   = {DEGAST3D: Learning Deformable 3D Graph Similarity to Track Plant Cells in Unregistered Time Lapse Images},
+  author  = {Islam, Md Shazid and Dutta, Arindam and Ta, Calvin-Khang and Rodriguez, Kevin and
+             Michael, Christian and Alber, Mark and Reddy, G. Venugopala and Roy-Chowdhury, Amit K.},
+  journal = {IEEE Transactions on Computational Biology and Bioinformatics},
+  volume  = {22},
+  number  = {1},
+  pages   = {343--354},
+  year    = {2025},
+  doi     = {10.1109/TCBBIO.2024.3525404}
+}</code></pre>
+      </div>
+      <p class="note">This work was supported in part by the U.S. National Science Foundation under grants OAC-2411453, OAC-1664172, DMS-1762063, DMS-2029814, and IOS-2055690.</p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wide">
+    <span>Vision and Learning Group, UC Riverside</span>
+    <span><a href="../">Back to Md Shazid Islam&rsquo;s homepage</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var t = document.getElementById(b.dataset.copy).innerText;
+    try {
+      navigator.clipboard.writeText(t).then(function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1600); });
+    } catch (e) {}
+  });
+});
+</script>
+</body>
+</html>

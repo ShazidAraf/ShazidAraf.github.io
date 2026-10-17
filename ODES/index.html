@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODES: Online Domain Adaptation with Expert Guidance</title>
+<meta name="description" content="ODES (MICCAI 2025): online, source-free domain adaptation for medical image segmentation, guided by a small amount of expert labeling.">
+<meta property="og:title" content="ODES: Online Domain Adaptation with Expert Guidance for Medical Image Segmentation">
+<meta property="og:description" content="MICCAI 2025. Adapt a segmentation model to a new scanner on the fly, using 1% expert labels on the patches that matter most.">
+<meta property="og:image" content="https://shazidaraf.github.io/ODES/assets/fig2_pipeline.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/project.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="in">
+    <a href="../">Md Shazid Islam</a>
+    <nav aria-label="Sections">
+      <a href="#problem">Problem</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#code">Code</a>
+      <a href="#citation">Citation</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="col head">
+    <span class="venue">MICCAI 2025</span>
+    <h1>ODES</h1>
+    <p class="full">Online Domain Adaptation with Expert Guidance for Medical Image Segmentation</p>
+    <p class="authors"><b>Md Shazid Islam</b>, Sayak Nag, Arindam Dutta, Sk Miraj Ahmed, Fahim Faisal Niloy, Shreyangshu Bera, Amit K. Roy-Chowdhury</p>
+    <p class="affil">University of California, Riverside</p>
+    <div class="btns">
+      <a class="btn primary" href="https://papers.miccai.org/miccai-2025/paper/5017_paper.pdf">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6V2zm8 1.5V8h4.5L14 3.5zM8 12h8v1.6H8V12zm0 3.4h8V17H8v-1.6zm0-6.8h4v1.6H8V8.6z"/></svg>Paper</a>
+      <a class="btn" href="https://github.com/ShazidAraf/ODES">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>Code on GitHub</a>
+      <a class="btn" href="#citation">BibTeX</a>
+    </div>
+  </div>
+
+  <div class="wide">
+    <figure class="hero-fig" style="max-width:980px">
+      <img src="assets/overview.gif" alt="Animated overview of ODES: offline vs online adaptation, the per-batch pipeline, diversity weighting, and results" width="960" height="600">
+    </figure>
+  </div>
+
+  <div class="col">
+    <p class="tldr">A segmentation model trained on one scanner breaks on another. ODES fixes it on the fly, one batch of patients at a time. It asks an expert to label just 1% of the pixels, on the images and patches that matter most. It never sees the source data and stores nothing.</p>
+
+    <section id="problem">
+      <h2>The problem</h2>
+      <p>Medical segmentation models lose accuracy under domain shift. A new scanner, a new MRI contrast, or a new hospital is enough. In a clinic, patient scans arrive one after another, so the model has to adapt online. It sees each batch once and gets exactly one forward and backward pass.</p>
+      <p>Existing options each fall short:</p>
+      <ul>
+        <li><b>Unsupervised domain adaptation</b> needs the labeled source data, which privacy rules often block, and a large offline target set.</li>
+        <li><b>Test-time adaptation (TTA)</b> works online, but it learns from the model's own pseudo-labels. These are noisy, and errors hurt most on small organs.</li>
+        <li><b>Offline active domain adaptation</b> adds expert labels, but it needs to store training data and annotations and run many passes.</li>
+      </ul>
+      <figure>
+        <img src="assets/fig1_setups.png" alt="Three adaptation setups: offline ADA with annotation storage, TTA without expert input, and ODES with expert input and no storage" loading="lazy">
+        <figcaption><b>Three setups.</b> (a) Offline active domain adaptation stores data and annotations. (b) Test-time adaptation has no expert in the loop. (c) ODES brings in the expert online, with no source data and no storage.</figcaption>
+      </figure>
+      <p>ODES fits real clinical timing. The expert labels a few patches during the <b>turnover time</b> between two patients&rsquo; scans, so the workflow is not slowed down.</p>
+    </section>
+
+    <section id="method">
+      <h2>How ODES works</h2>
+      <p>For every incoming batch, ODES runs an <b>infer, acquire, update</b> loop.</p>
+      <figure>
+        <img src="assets/fig2_pipeline.png" alt="ODES pipeline: a stream of batches goes into the pretrained model, then image pruning and acquisition pick patches for expert feedback, and the loss updates the model" loading="lazy">
+        <figcaption><b>The online loop.</b> The pretrained model predicts on the batch. The active learning block prunes the batch (IP), picks the most useful patches (A), gets expert labels, and updates the model before the next batch arrives.</figcaption>
+      </figure>
+
+      <h3><span class="step">1</span>Image pruning: label only the most shifted images</h3>
+      <p>Not every image in a batch is equally shifted, so labeling all of them wastes the expert&rsquo;s time. ODES compares each image&rsquo;s batch-normalization statistics with the statistics stored from the source domain. Each image is lightly augmented (flips, small rotations, brightness changes). Then a KL divergence is computed between the source and target per-channel Gaussians across BN layers. Only the top <b>K%</b> most shifted images move on.</p>
+
+      <h3><span class="step">2</span>Acquisition: find the uncertain, mixed regions</h3>
+      <p>Within each kept image, ODES scores square patches with two signals:</p>
+      <ul>
+        <li><b>Uncertainty:</b> the average pixel entropy of the prediction inside the patch.</li>
+        <li><b>Regional impurity:</b> how many classes are mixed inside the patch, which flags boundaries between organs.</li>
+      </ul>
+      <p>Multiplying the two gives an initial acquisition map. On its own, though, it tends to pick many patches that sit next to each other and look alike.</p>
+
+      <h3><span class="step">3</span>Diversity weighting: spread the labels out</h3>
+      <p>ODES runs farthest-first traversal twice on the high-uncertainty points. The first pass spreads them out in image space (Euclidean distance). The second spreads them out in feature space (cosine distance). It places a Gaussian at each chosen point to build two weight maps and multiplies them. The final map is uncertainty &times; impurity &times; diversity weight. The expert labels the top <b>b%</b> of the image area from this map.</p>
+      <figure>
+        <img src="assets/fig3_diversity.png" alt="Diversity weighting: the initial acquisition map is reweighted by spatial and feature diversity maps to form the final map" loading="lazy">
+        <figcaption><b>Diversity weighting.</b> Uncertain patches start clustered (A<sup>init</sup>). Spatial (W<sub>d</sub>) and feature (W<sub>f</sub>) diversity maps spread them out in the final map (A<sup>final</sup>).</figcaption>
+      </figure>
+
+      <h3><span class="step">4</span>Update: one quick pass</h3>
+      <p>Only the batch-normalization layers are updated. The loss has two parts:</p>
+      <ul>
+        <li>A supervised cross-entropy loss on the expert-labeled patches.</li>
+        <li>A continuity loss between neighboring MRI slices, since one volume changes smoothly from slice to slice.</li>
+      </ul>
+      <p>Then the model moves on to the next patient.</p>
+    </section>
+
+    <section id="results">
+      <h2>Results</h2>
+      <p>ODES was tested on three domain shifts:</p>
+      <ul>
+        <li>CHAOS T1 MRI, in-phase to out-of-phase (liver, both kidneys, spleen).</li>
+        <li>CHAOS T2-SPIR to DUKE (liver).</li>
+        <li>Prostate MRI from BMC to RUNMC.</li>
+      </ul>
+      <p>The backbone is DeepLabv3, the annotation budget is 1% of pixels, and the metric is Dice.</p>
+      <div class="stats">
+        <div class="stat"><b>78.61</b><span>mean Dice, CHAOS IP&rarr;OOP. Best TTA: 73.19</span></div>
+        <div class="stat"><b>71.65</b><span>liver Dice, CHAOS&rarr;DUKE. Best TTA: 58.39</span></div>
+        <div class="stat"><b>79.34</b><span>prostate Dice, BMC&rarr;RUNMC. Best TTA: 74.91</span></div>
+        <div class="stat"><b>1%</b><span>of pixels labeled by the expert</span></div>
+      </div>
+
+      <h3>Against online test-time adaptation</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Method</th><th>CHAOS IP&rarr;OOP (mean)</th><th>CHAOS&rarr;DUKE (liver)</th><th>BMC&rarr;RUNMC (prostate)</th></tr></thead>
+          <tbody>
+            <tr><td>Source only</td><td>52.99</td><td>26.28</td><td>65.32</td></tr>
+            <tr><td>TENT</td><td>67.30</td><td>46.64</td><td>71.02</td></tr>
+            <tr><td>CoTTA</td><td>67.10</td><td>52.58</td><td>73.87</td></tr>
+            <tr><td>F-TTA</td><td>70.13</td><td>48.29</td><td>73.18</td></tr>
+            <tr><td>STTA</td><td>67.13</td><td>53.36</td><td>73.51</td></tr>
+            <tr><td>SaTTCA</td><td>73.19</td><td>58.39</td><td>74.91</td></tr>
+            <tr><td>TTAS</td><td>69.41</td><td>49.39</td><td>72.81</td></tr>
+            <tr class="ours"><td>ODES (K = 100)</td><td>78.61</td><td>71.65</td><td>79.34</td></tr>
+            <tr class="ours"><td>ODES (K = 50)</td><td>78.56</td><td>70.16</td><td>78.36</td></tr>
+            <tr class="ours"><td>ODES (K = 10)</td><td>76.80</td><td>66.11</td><td>77.47</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Dice scores (%). K is the share of each batch kept after image pruning.</p>
+      <p>Labeling far fewer images costs little. On CHAOS&rarr;DUKE, keeping 50% of each batch instead of all of it drops Dice by only 1.49%. Keeping 10% drops it by 5.54%.</p>
+
+      <h3>Against offline active domain adaptation</h3>
+      <p>Offline methods such as RIPU and LabOR train with many passes over stored data. ODES gets one pass per batch, yet stays close to them. Its gap to LabOR is 2.79%, 1.06%, and 2.66% on the three shifts.</p>
+
+      <figure>
+        <img src="assets/fig4_visual.png" alt="Visual comparison: input MRI, ground truth, SaTTCA, RIPU, and ODES masks" loading="lazy">
+        <figcaption><b>Visual comparison.</b> From left: input, ground truth, SaTTCA (test-time adaptation), RIPU (offline), and ODES.</figcaption>
+      </figure>
+    </section>
+
+    <section id="code">
+      <h2>Code</h2>
+      <p>The code is open source at <a href="https://github.com/ShazidAraf/ODES">github.com/ShazidAraf/ODES</a>. It needs Python 3.8+, PyTorch 1.10+, OpenCV, NumPy, SciPy, and scikit-learn.</p>
+      <pre><code>git clone https://github.com/ShazidAraf/ODES.git
+cd ODES
+python demo_ODES.py --cfg cfgs/example_config.yaml</code></pre>
+      <p>Edit the YAML config to point at your dataset and set K and the budget b.</p>
+    </section>
+
+    <section id="citation">
+      <h2>Citation</h2>
+      <div class="cite">
+        <button class="copy" type="button" data-copy="bib">Copy</button>
+        <pre id="bib"><code>@inproceedings{islam2025odes,
+  title     = {ODES: Online Domain Adaptation with Expert Guidance for Medical Image Segmentation},
+  author    = {Islam, Md Shazid and Nag, Sayak and Dutta, Arindam and Ahmed, Sk Miraj and
+               Niloy, Fahim Faisal and Bera, Shreyangshu and Roy-Chowdhury, Amit K.},
+  booktitle = {Medical Image Computing and Computer Assisted Intervention (MICCAI)},
+  year      = {2025}
+}</code></pre>
+      </div>
+      <p class="note">This work was supported by the U.S. National Science Foundation under grants OAC-2411453 and DMS-2029814.</p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wide">
+    <span>Vision and Learning Group, UC Riverside</span>
+    <span><a href="../">Back to Md Shazid Islam&rsquo;s homepage</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var t = document.getElementById(b.dataset.copy).innerText;
+    try {
+      navigator.clipboard.writeText(t).then(function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1600); });
+    } catch (e) {}
+  });
+});
+</script>
+</body>
+</html>
