@@ -8,6 +8,9 @@
 <meta property="og:title" content="Md Shazid Islam">
 <meta property="og:description" content="Vision-language models, uncertainty, and annotation-efficient learning for medical imaging.">
 <meta property="og:image" content="https://shazidaraf.github.io/assets/profile.jpg">
+<script>
+(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
@@ -228,6 +231,19 @@ section.block { padding: 72px 0 24px; }
 @media (max-width: 520px) { .deep dl { grid-template-columns: 1fr; gap: 2px; } .deep dd { margin-bottom: 8px; } }
 @media (prefers-reduced-motion: reduce) { .deep summary::before { transition: none; } }
 
+
+/* Theme switch */
+.theme-toggle {
+  display: inline-grid; place-items: center; width: 38px; height: 38px; flex: none;
+  border-radius: 50%; border: 1.5px solid var(--line); background: transparent; color: var(--ink); cursor: pointer;
+}
+.theme-toggle:hover { border-color: var(--contour); color: var(--contour); }
+.theme-toggle svg { width: 18px; height: 18px; fill: currentColor; }
+.theme-toggle .i-sun { display: none; }
+.theme-toggle.is-dark .i-sun { display: block; }
+.theme-toggle.is-dark .i-moon { display: none; }
+.bar-right { display: flex; align-items: center; gap: 22px; }
+
 footer { padding: 64px 0 48px; color: var(--muted); }
 footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 24px; }
 
@@ -257,12 +273,18 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 <header class="topbar">
   <div class="wrap">
     <a class="brand" href="#top">Md Shazid Islam</a>
-    <nav aria-label="Sections">
+    <div class="bar-right">
+      <nav aria-label="Sections">
       <a href="#research">Research</a>
       <a href="#publications">Publications</a>
       <a href="#about">About</a>
       <a href="Md_Shazid_Islam_Resume.pdf">Resume</a>
-    </nav>
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
+      <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 1.8v2.6M12 19.6v2.6M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M1.8 12h2.6M19.6 12h2.6M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    </button>
+    </div>
   </div>
 </header>
 
@@ -610,5 +632,16 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   </div>
 </footer>
 
+<script>
+(function(){
+  var b=document.querySelector('.theme-toggle'); if(!b) return;
+  var mq=window.matchMedia('(prefers-color-scheme: dark)');
+  function cur(){var t=document.documentElement.getAttribute('data-theme');return t?t:(mq.matches?'dark':'light');}
+  function sync(){var d=cur()==='dark';b.setAttribute('aria-label',d?'Switch to light theme':'Switch to dark theme');b.classList.toggle('is-dark',d);}
+  b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
+  if(mq.addEventListener)mq.addEventListener('change',sync);
+  sync();
+})();
+</script>
 </body>
 </html>
