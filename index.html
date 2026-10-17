@@ -255,6 +255,14 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 .interests span { color: var(--muted); font-size: 15.5px; line-height: 1.5; }
 @media (max-width: 860px) { .interests { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 520px) { .interests { grid-template-columns: 1fr; } }
+.hobby { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; padding: 28px 0; border-top: 1px solid var(--line); }
+.hobby h3, .hobby-photos h3 { font-family: "Bricolage Grotesque", sans-serif; font-size: 23px; margin: 0 0 8px; color: var(--contour); }
+.hobby p { margin: 0 0 12px; max-width: 60ch; }
+.hobby-photos { padding: 28px 0 0; border-top: 1px solid var(--line); }
+.photo-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.media.photo { aspect-ratio: 4 / 3; }
+.media.photo .ph span { font-size: 14px; }
+@media (max-width: 860px) { .hobby { grid-template-columns: 1fr; gap: 18px; } .photo-strip { grid-template-columns: 1fr 1fr; } }
 /* Single accent */
 .block h2::after { content: ""; display: block; width: 48px; height: 4px; border-radius: 2px; margin-top: 10px; background: var(--contour); }
 .news time { color: var(--contour); font-weight: 700; }
@@ -639,6 +647,33 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       </div>
     </div>
   </section>
+  <section class="block" id="beyond">
+    <div class="wrap">
+      <h2>Beyond research</h2>
+      <article class="hobby">
+        <figure class="media"><img src="assets/media/football-tactics.jpg" alt="Football Tactics Board app showing two teams on a pitch with drawing tools and an AI analyst panel" loading="lazy"></figure>
+        <div>
+          <h3>Football analysis</h3>
+          <p>I build tools to study football tactics. The Football Tactics Board is an interactive whiteboard with animated multi-phase moves, drawing rules that follow real football, and a built-in AI analyst. I also made an interactive World Cup 2026 predictor.</p>
+          <div class="links">
+            <a href="https://shazidaraf.github.io/Football_Tactics_Board/">Try the tactics board</a>
+            <a href="https://github.com/ShazidAraf/Football_Tactics_Board">Code</a>
+            <a href="https://github.com/ShazidAraf/WORLD-CUP-2026">World Cup 2026 predictor</a>
+          </div>
+        </div>
+      </article>
+      <div class="hobby-photos">
+        <h3>Photography</h3>
+        <div class="photo-strip">
+          <figure class="media photo"><img src="assets/photos/photo1.jpg" alt="Photograph by Md Shazid Islam" loading="lazy" onerror="this.parentElement.classList.add('empty')"><div class="ph"><span>Photo 1</span></div></figure>
+          <figure class="media photo"><img src="assets/photos/photo2.jpg" alt="Photograph by Md Shazid Islam" loading="lazy" onerror="this.parentElement.classList.add('empty')"><div class="ph"><span>Photo 2</span></div></figure>
+          <figure class="media photo"><img src="assets/photos/photo3.jpg" alt="Photograph by Md Shazid Islam" loading="lazy" onerror="this.parentElement.classList.add('empty')"><div class="ph"><span>Photo 3</span></div></figure>
+          <figure class="media photo"><img src="assets/photos/photo4.jpg" alt="Photograph by Md Shazid Islam" loading="lazy" onerror="this.parentElement.classList.add('empty')"><div class="ph"><span>Photo 4</span></div></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer>

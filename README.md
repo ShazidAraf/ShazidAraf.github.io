@@ -24,3 +24,7 @@ Drop a file with the matching name into `assets/media/`. The placeholder disappe
 
 Keep GIFs under about 5 MB. For an MP4, replace the `<img>` in that project's `<figure class="media">` with
 `<video src="assets/media/name.mp4" autoplay muted loop playsinline></video>`.
+
+## Adding photos
+
+Put up to four photos in `assets/photos/` named `photo1.jpg` to `photo4.jpg` (4:3 works best, about 1200 px wide). Empty slots show a placeholder until a file is added.
