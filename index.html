@@ -182,7 +182,7 @@ section.block { padding: 72px 0 24px; }
 .media.small { margin-bottom: 14px; border-radius: 10px; }
 .media.empty img, .media.empty video { display: none; }
 
-.more { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; padding: 32px 0 0; border-top: 1px solid var(--line); }
+.more { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; padding: 32px 0 0; border-top: 1px solid var(--line); }
 .more h4 { font-family: "Bricolage Grotesque", sans-serif; font-size: 19px; margin: 0 0 4px; }
 .more .when { color: var(--muted); font-size: 14px; margin: 0 0 8px; }
 .more p { margin: 0; font-size: 16px; }
@@ -202,6 +202,31 @@ section.block { padding: 72px 0 24px; }
 .about ul { list-style: none; padding: 0; margin: 0 0 32px; }
 .about li { padding: 10px 0; border-top: 1px solid var(--line); }
 .about li span { color: var(--muted); display: block; font-size: 15px; }
+
+
+/* Paper details, opened on click */
+.deep { margin: 14px 0 4px; border-top: 1px solid var(--line); }
+.deep summary {
+  cursor: pointer; list-style: none; padding: 12px 0 4px;
+  font-weight: 700; font-size: 15px; color: var(--contour);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.deep summary::-webkit-details-marker { display: none; }
+.deep summary::before {
+  content: ""; width: 9px; height: 9px;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg); transition: transform .2s ease;
+}
+.deep[open] summary::before { transform: rotate(45deg); }
+.deep dl { display: grid; grid-template-columns: 92px 1fr; gap: 10px 16px; margin: 12px 0 0; font-size: 15.5px; }
+.deep dt { font-weight: 700; color: var(--muted); }
+.deep dd { margin: 0; }
+.deep .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.deep .stat { background: var(--contour-soft); border-radius: 10px; padding: 8px 12px; min-width: 120px; }
+.deep .stat b { display: block; font-family: "Bricolage Grotesque", sans-serif; font-size: 22px; color: var(--ink); line-height: 1.1; }
+.deep .stat span { font-size: 13px; color: var(--muted); }
+@media (max-width: 520px) { .deep dl { grid-template-columns: 1fr; gap: 2px; } .deep dd { margin-bottom: 8px; } }
+@media (prefers-reduced-motion: reduce) { .deep summary::before { transition: none; } }
 
 footer { padding: 64px 0 48px; color: var(--muted); }
 footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 24px; }
@@ -298,40 +323,20 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
             <li>Cuts annotation interaction cost by up to about 25%.</li>
             <li>Matches or beats manual correction under domain shift and limited supervision.</li>
           </ul>
-          <div class="links"><a href="https://arxiv.org/abs/2511.14028">Preprint</a></div>
-        </div>
-      </article>
-
-      <article class="project">
-        <figure class="media">
-          <img src="assets/media/uncertainty-3d-vlm.gif" alt="Word-level uncertainty map over a 3D CT scan" loading="lazy" onerror="this.parentElement.classList.add('empty')">
-          <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/uncertainty-3d-vlm.gif</code></span></div>
-        </figure>
-        <div>
-          <h3>Uncertainty for 3D vision-language models</h3>
-          <p class="when">August 2026 to present</p>
-          <p>A training-free method that links each word of a generated CT report to the parts of the scan that support or contradict it.</p>
-          <ul>
-            <li>Occludes blocks of a 3D ViT token grid to measure how each region changes each word.</li>
-            <li>Pools the evidence into word-level and scan-level uncertainty, then marks a small 3D region for a radiologist to review first.</li>
-            <li>Runs on 900+ CT volumes from AbdomenAtlas 3.0 with NV-Reason-CT on a SLURM GPU cluster.</li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="project">
-        <figure class="media">
-          <img src="assets/media/radiology-report.gif" alt="Grounded chest X-ray report generation" loading="lazy" onerror="this.parentElement.classList.add('empty')">
-          <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/radiology-report.gif</code></span></div>
-        </figure>
-        <div>
-          <h3>Grounded radiology report generation</h3>
-          <p class="when">January 2026 to May 2026</p>
-          <p>Fine-tuned LLaVA-Med 1.5 on MIMIC-CXR to write chest X-ray reports tied to image evidence.</p>
-          <ul>
-            <li>Multi-GPU training with supervised fine-tuning and preference optimization (DPO, GRPO).</li>
-            <li>Image-grounded reasoning reduces hallucinated findings and improves spatial accuracy.</li>
-          </ul>
+          <div class="links"><a href="https://arxiv.org/abs/2511.14028">Paper</a></div>
+          <details class="deep">
+            <summary>How it works</summary>
+            <dl>
+              <dt>Problem</dt><dd>Medical images have blurry, ambiguous boundaries. Drawing polygons around them is slow and tiring, and bigger regions cost more effort.</dd>
+              <dt>Approach</dt><dd>The expert types a short command such as &ldquo;expand to bottom-right&rdquo; or &ldquo;remove small fragments&rdquo;. GPT-3.5, using in-context examples, turns it into a program. The program calls refinement tools (EXPAND, SHRINK, REMOVE, FILL, SMOOTH) that edit the mask with no further human input.</dd>
+              <dt>Why it scales</dt><dd>The typed command stays about the same length whether the region is small or large, so expert effort stays nearly flat.</dd>
+              <dt>Data</dt><dd>Abdominal MRI (CHAOS, in-phase to out-of-phase: liver, kidneys, spleen) and breast ultrasound (BUSI to UDIAT).</dd>
+            </dl>
+            <div class="stats">
+              <div class="stat"><b>83.4%</b><span>less annotation time, MRI</span></div>
+              <div class="stat"><b>79.9%</b><span>less annotation time, ultrasound</span></div>
+            </div>
+          </details>
         </div>
       </article>
 
@@ -352,6 +357,19 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
             <a href="https://papers.miccai.org/miccai-2025/paper/5017_paper.pdf">Paper</a>
             <a href="https://github.com/ShazidAraf/ODES">Code</a>
           </div>
+          <details class="deep">
+            <summary>How it works</summary>
+            <dl>
+              <dt>Problem</dt><dd>A model trained on one scanner drops in accuracy on another. Hospitals receive patients one after another, so the model must adapt online, with no access to the source data and no stored labels.</dd>
+              <dt>Approach</dt><dd>For each incoming batch the model predicts, then image pruning uses batch-norm statistics to keep only the most shifted images. An acquisition rule combines uncertainty, regional impurity, and spatial and feature diversity to pick small patches for the expert. The model updates once and moves on.</dd>
+              <dt>Practical fit</dt><dd>Expert labeling happens in the turnover time between patients, so it does not slow the clinical workflow.</dd>
+              <dt>Data</dt><dd>Three shifts: CHAOS MRI in-phase to out-of-phase, CHAOS T2-SPIR to DUKE, and prostate MRI from BMC to RUNMC.</dd>
+            </dl>
+            <div class="stats">
+              <div class="stat"><b>+7.7%</b><span>average gain over test-time adaptation</span></div>
+              <div class="stat"><b>1 pass</b><span>per batch, no data stored</span></div>
+            </div>
+          </details>
         </div>
       </article>
 
@@ -372,19 +390,108 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
             <a href="https://ieeexplore.ieee.org/abstract/document/10820545">Paper</a>
             <a href="https://github.com/ShazidAraf/DEGAST3D">Code</a>
           </div>
+          <details class="deep">
+            <summary>How it works</summary>
+            <dl>
+              <dt>Problem</dt><dd>Plant tissue in 3D microscopy has many tightly packed cells, uneven growth, divisions in different planes, and noisy deep layers. The stacks are also unregistered between time points.</dd>
+              <dt>Approach</dt><dd>Cells are segmented in 3D, then each pair of time points is registered with RANSAC on point-cloud features. A graph neural network compares each cell&rsquo;s local 3D neighbor graph to find its match. A separate 3D CNN checks mother and daughter cell shapes to detect divisions.</dd>
+              <dt>Data</dt><dd>Public confocal time-lapse stacks of the Arabidopsis shoot apical meristem, with 4 hours between time points.</dd>
+            </dl>
+            <div class="stats">
+              <div class="stat"><b>+6.83%</b><span>precision, cell matching</span></div>
+              <div class="stat"><b>+5.96%</b><span>recall, cell matching</span></div>
+              <div class="stat"><b>+15.38%</b><span>recall, division detection</span></div>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="media">
+          <img src="assets/media/uncertainty-3d-vlm.gif" alt="Word-level uncertainty map over a 3D CT scan" loading="lazy" onerror="this.parentElement.classList.add('empty')">
+          <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/uncertainty-3d-vlm.gif</code></span></div>
+        </figure>
+        <div>
+          <h3>Uncertainty for 3D vision-language models</h3>
+          <p class="when">August 2026 to present</p>
+          <p>A training-free method that links each word of a generated CT report to the parts of the scan that support or contradict it.</p>
+          <ul>
+            <li>Occludes blocks of a 3D ViT token grid to measure how each region changes each word.</li>
+            <li>Pools the evidence into word-level and scan-level uncertainty, then marks a small 3D region for a radiologist to review first.</li>
+            <li>Runs on 900+ CT volumes from AbdomenAtlas 3.0 with NV-Reason-CT on a SLURM GPU cluster.</li>
+          </ul>
+          <details class="deep">
+            <summary>How it works</summary>
+            <dl>
+              <dt>Problem</dt><dd>A 3D vision-language model can write a fluent CT report that is wrong in places. Radiologists need to know which words to doubt and where to look.</dd>
+              <dt>Approach</dt><dd>Block-wise feature replacement (occlusion) on the 3D ViT token grid measures how each scan region supports or contradicts each generated word. An evidential framework pools this into word-level vacuity and dissonance, then into a scan-level uncertainty map.</dd>
+              <dt>Output</dt><dd>A budgeted 3D review region that points the radiologist at the most conflicting anatomy, shown as NIfTI overlays in 3D Slicer.</dd>
+              <dt>Evaluation</dt><dd>A label-free protocol with clinically grounded error labels.</dd>
+            </dl>
+            <div class="stats">
+              <div class="stat"><b>900+</b><span>CT volumes, AbdomenAtlas 3.0</span></div>
+              <div class="stat"><b>0</b><span>extra training needed</span></div>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="media">
+          <img src="assets/media/radiology-report.gif" alt="Grounded chest X-ray report generation" loading="lazy" onerror="this.parentElement.classList.add('empty')">
+          <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/radiology-report.gif</code></span></div>
+        </figure>
+        <div>
+          <h3>Grounded radiology report generation</h3>
+          <p class="when">January 2026 to May 2026</p>
+          <p>Fine-tuned LLaVA-Med 1.5 on MIMIC-CXR to write chest X-ray reports tied to image evidence.</p>
+          <ul>
+            <li>Multi-GPU training with supervised fine-tuning and preference optimization (DPO, GRPO).</li>
+            <li>Image-grounded reasoning reduces hallucinated findings and improves spatial accuracy.</li>
+          </ul>
+          <details class="deep">
+            <summary>How it works</summary>
+            <dl>
+              <dt>Model</dt><dd>LLaVA-Med 1.5, a vision-language model for medical images.</dd>
+              <dt>Training</dt><dd>Supervised fine-tuning, then preference optimization with DPO and GRPO, on multiple GPUs.</dd>
+              <dt>Grounding</dt><dd>Generation is tied to image evidence, which cuts hallucinated findings and improves spatial accuracy over raw-image baselines.</dd>
+              <dt>Data</dt><dd>MIMIC-CXR chest X-rays and reports.</dd>
+            </dl>
+          </details>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="media">
+          <img src="assets/media/dance.gif" alt="Music turned into a stick-figure dance and a realistic video frame" loading="lazy" onerror="this.parentElement.classList.add('empty')">
+          <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/dance.gif</code></span></div>
+        </figure>
+        <div>
+          <h3>Synthesis of Style-Specific Dance by Learning Body Gestures from Music <span class="venue">Multimedia Tools and Applications 2025</span></h3>
+          <p class="when">January 2019 to July 2020</p>
+          <p>A model that listens to music and generates a matching dance, first as a stick figure and then as realistic video.</p>
+          <ul>
+            <li>A CNN-LSTM mixture density network predicts rhythm-aligned poses from the music.</li>
+            <li>A Pix2pixHD GAN renders each pose as a photo-realistic frame.</li>
+            <li>Learns Ballet, Rumba, Cha-Cha, Tango, and Waltz, and beats existing methods on standard metrics.</li>
+          </ul>
+          <div class="links">
+            <a href="https://link.springer.com/article/10.1007/s11042-025-21123-3">Paper</a>
+            <a href="https://youtu.be/ATaC7Cj0UIA">Video</a>
+          </div>
+          <details class="deep">
+            <summary>How it works</summary>
+            <dl>
+              <dt>Problem</dt><dd>Dance moves fast, and body parts must stay coherent across frames. The model has to learn this from limited audio and motion data.</dd>
+              <dt>Approach</dt><dd>A short-time Fourier transform turns the music into features. A CNN and an LSTM read them along with recent poses, and a mixture density network predicts the next pose as a stick figure. A Pix2pixHD GAN with post-processing then renders a realistic dancer.</dd>
+              <dt>Styles</dt><dd>Ballet, Rumba, Cha-Cha, Tango, and Waltz.</dd>
+              <dt>Data</dt><dd>YouTube dance videos and motion-capture recordings.</dd>
+            </dl>
+          </details>
         </div>
       </article>
 
       <div class="more">
-        <div>
-          <figure class="media small">
-            <img src="assets/media/dance.gif" alt="Music turned into a stick-figure dance and a realistic video frame" loading="lazy" onerror="this.parentElement.classList.add('empty')">
-            <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/dance.gif</code></span></div>
-          </figure>
-          <h4>Synthesis of Style-Specific Dance by Learning Body Gestures from Music</h4>
-          <p class="when">2019 to 2020</p>
-          <p>A CNN-LSTM mixture density network turns music into rhythm-aligned motion, rendered to video with a Pix2pixHD GAN. <a href="https://youtu.be/ATaC7Cj0UIA">Watch the video</a></p>
-        </div>
         <div>
           <h4>Multi-person tracking</h4>
           <p class="when">2022 to 2023</p>
@@ -396,12 +503,12 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <p>A delay-aware framework that handles slow clients with buffer diversification and contribution-based weighting.</p>
         </div>
         <div>
-          <h4>Transformers for social media text</h4>
+          <h4>Transformers for social media text <span class="venue">ISMSIT 2024</span></h4>
           <p class="when">2024</p>
           <p>Benchmarked transformer models for social-media text classification on TweetEval across several language tasks. <a href="https://ieeexplore.ieee.org/abstract/document/10757178">Paper</a></p>
         </div>
         <div>
-          <h4>Solar power forecasting</h4>
+          <h4>Solar power forecasting <span class="venue">IEEE ETFG 2023</span></h4>
           <p class="when">2023</p>
           <p>A source-free domain-adaptive model that predicts solar power generation in new regions without local labels. <a href="https://ieeexplore.ieee.org/abstract/document/10407265">Paper</a></p>
         </div>
