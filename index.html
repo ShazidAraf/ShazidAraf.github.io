@@ -123,13 +123,6 @@ img, video { display: block; max-width: 100%; height: auto; }
   animation: draw 2.4s cubic-bezier(.6,.05,.3,1) .3s forwards;
 }
 .handle { fill: var(--surface); stroke: var(--contour); stroke-width: 2; opacity: 0; animation: pop .3s ease-out forwards; }
-.tag {
-  position: absolute; right: -4px; bottom: 9%;
-  background: var(--mask); color: #fff;
-  font-size: 13px; font-weight: 700;
-  padding: 5px 10px; border-radius: 6px;
-  opacity: 0; animation: pop .4s ease-out 2.6s forwards;
-}
 @keyframes draw { to { stroke-dashoffset: 0; } }
 @keyframes pop { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
 
@@ -264,7 +257,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .contour { animation: none; stroke-dashoffset: 0; }
-  .handle, .tag { animation: none; opacity: 1; }
+  .handle { animation: none; opacity: 1; }
 }
 </style>
 </head>
@@ -312,7 +305,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <circle class="handle" cx="214" cy="372" r="6" style="animation-delay:1.9s"/>
           <circle class="handle" cx="32" cy="214" r="6" style="animation-delay:2.3s"/>
         </svg>
-        <span class="tag">researcher, 0.99</span>
       </div>
     </div>
   </section>
