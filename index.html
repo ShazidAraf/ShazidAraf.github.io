@@ -178,6 +178,8 @@ section.block { padding: 72px 0 24px; }
 .media .ph strong { color: var(--ink); font-size: 16px; }
 .media .ph code { background: var(--bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
 .media.empty .ph { display: grid; }
+.media:not(.empty) { border-style: solid; background: #fff; }
+.media.small { margin-bottom: 14px; border-radius: 10px; }
 .media.empty img, .media.empty video { display: none; }
 
 .more { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; padding: 32px 0 0; border-top: 1px solid var(--line); }
@@ -375,6 +377,10 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 
       <div class="more">
         <div>
+          <figure class="media small">
+            <img src="assets/media/dance.gif" alt="Music turned into a stick-figure dance and a realistic video frame" loading="lazy" onerror="this.parentElement.classList.add('empty')">
+            <div class="ph"><strong>Demo coming soon</strong><span>Add <code>assets/media/dance.gif</code></span></div>
+          </figure>
           <h4>Music to dance</h4>
           <p class="when">2019 to 2020</p>
           <p>A CNN-LSTM mixture density network turns music into rhythm-aligned motion, rendered to video with a Pix2pixHD GAN. <a href="https://youtu.be/ATaC7Cj0UIA">Watch the video</a></p>

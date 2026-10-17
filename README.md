@@ -20,6 +20,7 @@ Drop a file with the matching name into `assets/media/`. The placeholder disappe
 | Radiology report generation | `radiology-report.gif` |
 | ODES | `odes.gif` |
 | DEGAST3D | `degast3d.gif` |
+| Music to dance (small card) | `dance.gif` |
 
 Keep GIFs under about 5 MB. For an MP4, replace the `<img>` in that project's `<figure class="media">` with
 `<video src="assets/media/name.mp4" autoplay muted loop playsinline></video>`.
