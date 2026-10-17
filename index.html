@@ -249,6 +249,12 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .handle { animation: none; opacity: 1; }
 }
 
+.interests { list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.interests li { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--contour); border-radius: 10px; padding: 14px 16px; }
+.interests strong { display: block; font-family: "Bricolage Grotesque", sans-serif; font-size: 18px; margin-bottom: 4px; }
+.interests span { color: var(--muted); font-size: 15.5px; line-height: 1.5; }
+@media (max-width: 860px) { .interests { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .interests { grid-template-columns: 1fr; } }
 /* Single accent */
 .block h2::after { content: ""; display: block; width: 48px; height: 4px; border-radius: 2px; margin-top: 10px; background: var(--contour); }
 .news time { color: var(--contour); font-weight: 700; }
@@ -329,6 +335,20 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           </ul>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="block" id="interests">
+    <div class="wrap">
+      <h2>Research interests</h2>
+      <ul class="interests">
+        <li><strong>Vision-language models</strong><span>Models that write grounded reports from medical images and know which words to doubt.</span></li>
+        <li><strong>Annotation-efficient learning</strong><span>Active learning and language-guided labeling that cut how much experts must annotate.</span></li>
+        <li><strong>Domain adaptation</strong><span>Keeping models accurate when the scanner, contrast, or hospital changes, even online and source-free.</span></li>
+        <li><strong>Trustworthy medical AI</strong><span>Uncertainty quantification and hallucination reduction, so clinicians can check model outputs.</span></li>
+        <li><strong>3D and biomedical image analysis</strong><span>Segmentation, registration, and cell tracking in volumetric and time-lapse data.</span></li>
+        <li><strong>LLM agents and tool use</strong><span>Language models that turn instructions into executable programs and multi-step workflows.</span></li>
+      </ul>
     </div>
   </section>
 
