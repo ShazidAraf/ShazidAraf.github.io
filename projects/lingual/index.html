@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://shazidaraf.github.io/projects/lingual/">
+<title>LINGUAL: Language-Integrated Guidance in Active Learning</title>
+<meta name="description" content="LINGUAL (WACV 2027): language-guided active learning for medical image segmentation. Short natural language instructions replace polygon drawing.">
+<meta property="og:title" content="LINGUAL: Language-INtegrated GUidance in Active Learning for Medical Image Segmentation">
+<meta property="og:description" content="WACV 2027. Fix segmentation masks with short language instructions instead of polygon drawing, with about 25% less estimated annotation time.">
+<meta property="og:image" content="https://shazidaraf.github.io/projects/lingual/assets/fig2_workflow.png">
+<script>
+(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/project.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="in">
+    <a href="../../">Md Shazid Islam</a>
+    <div class="bar-right">
+      <nav aria-label="Sections">
+      <a href="#problem">Problem</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#code">Code</a>
+      <a href="#citation">Citation</a>
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
+      <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 1.8v2.6M12 19.6v2.6M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M1.8 12h2.6M19.6 12h2.6M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="col head">
+    <span class="venue">WACV 2027</span>
+    <h1>LINGUAL</h1>
+    <p class="full">Language-INtegrated GUidance in Active Learning for Medical Image Segmentation</p>
+    <p class="authors"><b>Md Shazid Islam</b><sup>1</sup>, Shreyangshu Bera<sup>1</sup>, Sudipta Paul<sup>2*</sup>, Amit Roy-Chowdhury<sup>1</sup></p>
+    <p class="affil"><sup>1</sup>University of California, Riverside &nbsp; <sup>2</sup>Samsung Research America</p>
+    <div class="btns">
+      <a class="btn primary" href="https://arxiv.org/abs/2511.14028">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6V2zm8 1.5V8h4.5L14 3.5zM8 12h8v1.6H8V12zm0 3.4h8V17H8v-1.6zm0-6.8h4v1.6H8V8.6z"/></svg>Paper</a>
+      <a class="btn" href="https://github.com/ShazidAraf/LINGUAL">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>Code on GitHub</a>
+      <a class="btn" href="#citation">BibTeX</a>
+    </div>
+  </div>
+
+  <div class="wide">
+    <figure class="hero-fig" style="max-width:980px">
+      <img src="assets/overview.gif" alt="Animated overview of LINGUAL: polygon drawing versus a short language instruction, then the EXPAND and SHRINK operations on an MRI scan" width="960" height="600">
+    </figure>
+  </div>
+
+  <div class="col">
+    <p class="tldr">Drawing an exact boundary around every uncertain region is slow. LINGUAL lets the annotator state what is wrong instead, such as &ldquo;Expand to bottom-right&rdquo;. An LLM turns that sentence into a program, and the program fixes the mask with no further human input. Accuracy stays close to manual drawing, and estimated annotation time drops by about 25%.</p>
+
+    <section id="problem">
+      <h2>The problem</h2>
+      <p>Active learning (AL) asks a human to label only the most useful regions of an image. Those regions still need dense pixel labels. An annotator usually places polygon vertices one by one along the boundary, and medical boundaries are often irregular and complex.</p>
+      <p>Existing options each fall short:</p>
+      <ul>
+        <li><b>Polygon delineation</b> is precise, but the cost grows with the region. A larger region has a longer boundary, so it needs more vertices.</li>
+        <li><b>Superpixel AL</b> needs only one class label per superpixel, so nothing is drawn. But superpixels can cross true object boundaries. A superpixel that covers both organ and background still gets one label, which adds label noise.</li>
+      </ul>
+      <figure>
+        <img src="assets/fig1_comparison.png" alt="Conventional AL refines regions by polygon delineation. LINGUAL refines the same regions with language feedback. The same instruction works for a small and a large region." loading="lazy" width="1800" height="318">
+        <figcaption><b>Drawing versus language.</b> (a) Conventional AL traces each region by hand. (b) LINGUAL reaches the same correction from instructions like &ldquo;Shrink to Left&rdquo;. (c) A larger region (blue) needs many more polygon vertices than a smaller one (red), but both can use the same instruction.</figcaption>
+      </figure>
+      <p>This is the key idea. &ldquo;Expand to bottom-right&rdquo; takes the same effort for a small region and a large one, within a reasonable size limit. So human effort stays nearly constant as regions grow.</p>
+    </section>
+
+    <section id="method">
+      <h2>How LINGUAL works</h2>
+      <p>LINGUAL runs inside <b>active domain adaptation</b>. A model pretrained on a source domain is adapted to a target domain over several rounds, under a fixed annotation budget per image. This setting fits well because EXPAND and SHRINK refine boundaries that the source model already predicts. A model trained from scratch has only noisy early predictions to refine.</p>
+      <figure>
+        <img src="assets/fig2_workflow.png" alt="LINGUAL workflow: the model predicts, the acquisition function samples regions, the annotator gives language feedback, the refinement block produces refined regions, and the loss updates the model" loading="lazy" width="2000" height="476">
+        <figcaption><b>The workflow.</b> (a) The model is updated during training, then frozen for testing. (b) The acquisition function picks regions, and each one gets language feedback and refinement. (c) Inside the refinement block, the Program Generator turns the feedback into a program and the Program Executor runs it.</figcaption>
+      </figure>
+
+      <h3><span class="step">1</span>Acquisition: pick the uncertain regions</h3>
+      <p>An acquisition function ranks candidate regions by uncertainty and keeps as many as the budget allows. LINGUAL does not depend on one choice. The paper tests it with Entropy, RIPU, ODES, and HALO.</p>
+
+      <h3><span class="step">2</span>Language feedback: state the correction</h3>
+      <p>The annotator looks at a region and names the operation and its direction. No pixel interaction is needed. One region can take several operations at once, for example &ldquo;Expand at the top-right, remove the fragments at the bottom, and smooth the boundary.&rdquo;</p>
+
+      <h3><span class="step">3</span>Program generation: turn words into code</h3>
+      <p>GPT-3.5 receives hand-written examples of instructions paired with programs. It then writes a program for the new instruction, using in-context learning. For example:</p>
+      <pre><code>Instruction: Shrink to the Right. Smooth the boundary at Right
+
+DIR0  = DIRECTION(keyword='shrink')
+MASK0 = SHRINK(mask=MASK, direction=DIR0)
+DIR1  = DIRECTION(keyword='smooth')
+MASK1 = SMOOTH(mask=MASK0, direction=DIR1)
+FINAL_RESULT = RESULT(var=MASK1)</code></pre>
+      <figure>
+        <img style="max-width:560px" src="assets/fig3a_generator.png" alt="Program Generator: in-context examples and a target instruction go to GPT-3.5, which outputs a program" loading="lazy" width="1000" height="1126">
+        <figcaption><b>Program Generator.</b> In-context examples and the target instruction form the prompt. GPT-3.5 returns the program.</figcaption>
+      </figure>
+
+      <h3><span class="step">4</span>Program execution: fix the mask</h3>
+      <p>Seven correction modules cover the errors that appear inside a region. Two utility modules, DIRECTION and RESULT, support them.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Error in the region</th><th style="text-align:left">Module</th><th style="text-align:left">Example instruction</th></tr></thead>
+          <tbody>
+            <tr><td>Under-segmentation</td><td style="text-align:left">EXPAND</td><td style="text-align:left">Expand to right</td></tr>
+            <tr><td>Over-segmentation</td><td style="text-align:left">SHRINK</td><td style="text-align:left">Shrink at top-left</td></tr>
+            <tr><td>Spurious fragments</td><td style="text-align:left">REMOVE</td><td style="text-align:left">Remove the small fragments</td></tr>
+            <tr><td>Internal holes</td><td style="text-align:left">FILL</td><td style="text-align:left">Fill small gaps at the bottom</td></tr>
+            <tr><td>Jagged edges</td><td style="text-align:left">SMOOTH</td><td style="text-align:left">Smooth the boundary at right</td></tr>
+            <tr><td>Whole region is object</td><td style="text-align:left">FOREGROUND</td><td style="text-align:left">Entire region foreground</td></tr>
+            <tr><td>Whole region is not object</td><td style="text-align:left">BACKGROUND</td><td style="text-align:left">Entire region background</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figure>
+        <img src="assets/fig3b_executor.png" alt="Program Executor: each program line is shown with its output on a breast ultrasound image, ending in the refined segmentation" loading="lazy" width="1600" height="1012">
+        <figcaption><b>Program Executor.</b> Each program line runs in turn on the ultrasound image, from the initial segmentation (P<sub>init</sub>) to the refined one (Y<sub>AL</sub>).</figcaption>
+      </figure>
+
+      <h3><span class="step">5</span>EXPAND and SHRINK: find where to stop</h3>
+      <p>An instruction like &ldquo;Expand to right&rdquo; gives a direction but no distance. LINGUAL finds the distance with <b>dual-sided boundary probing</b>:</p>
+      <ul>
+        <li><b>Sample seeds.</b> Pick seed points just inside and just outside the predicted boundary, along the requested direction.</li>
+        <li><b>Grow regions.</b> GraCo, a granularity-controllable segmentation model, groups similar pixels around each seed. This gives an inside region A<sub>in</sub> and an outside region A<sub>out</sub>. The algorithm can use any point-to-region function in place of GraCo.</li>
+        <li><b>Read the overlap.</b> If both seed sets lie in the same organ, the boundary is still misplaced, so A<sub>in</sub> and A<sub>out</sub> overlap a lot. If they lie on opposite sides of the true boundary, they barely overlap.</li>
+        <li><b>Update the mask.</b> EXPAND adds A<sub>in</sub> &cap; A<sub>out</sub> to the mask. SHRINK removes it. Then the steps repeat.</li>
+        <li><b>Stop at the best iteration.</b> The overlap score is &eta;<sub>t</sub> = |A<sub>in</sub> &cap; A<sub>out</sub>| / |A<sub>in</sub> &cup; A<sub>out</sub>|. LINGUAL keeps the iteration with the lowest &eta;<sub>t</sub>. In the figure below, that is iteration 4 for EXPAND and iteration 2 for SHRINK.</li>
+      </ul>
+      <p>GraCo runs at a low granularity (g = 0.1), so each iteration makes a small change. It works like a small step size in optimization and lowers the risk of over-correction. If no correction improves on the input, LINGUAL keeps the original mask.</p>
+      <figure>
+        <img src="assets/fig4_expand_shrink.png" alt="Step by step EXPAND and SHRINK on an abdominal MRI: region selection, boundary seeds, inside and outside regions, iterations, overlap plot, and final mask" loading="lazy" width="1800" height="1296">
+        <figcaption><b>EXPAND and SHRINK, step by step.</b> (a) Initial prediction. (b) Selected region, with true positives in orange, false positives in blue, and false negatives in green. (c) Boundary and direction. (d, e) Inside seeds in blue, outside seeds in yellow. (f) A<sub>in</sub> in pink, A<sub>out</sub> in violet, their overlap in brown. (g, h) Updates over iterations. (i) &eta;<sub>t</sub> per iteration. (j) Final mask at the lowest &eta;<sub>t</sub>.</figcaption>
+      </figure>
+
+      <h3><span class="step">6</span>Update: adapt the model</h3>
+      <p>The refined regions replace the sampled regions in the prediction map. The model is then updated with a supervised loss between its initial prediction and this refined map, plus any unsupervised loss, and the next round begins. After the last round, the adapted model is frozen for inference.</p>
+
+      <h3>How feedback is generated in the experiments</h3>
+      <p>To keep runs reproducible on public datasets, the feedback is generated from ground truth, which is standard practice in AL evaluation. It follows three stages:</p>
+      <ul>
+        <li><b>Find the operation.</b> Compare the prediction and ground truth inside the region. If false negatives dominate, choose EXPAND. If false positives dominate, choose SHRINK.</li>
+        <li><b>Find the direction.</b> Map the vector from the boundary centroid to the error centroid onto one of eight directions.</li>
+        <li><b>Write the sentence.</b> An LLM turns a keyword pair like &ldquo;Expand top-left&rdquo; into a natural instruction.</li>
+      </ul>
+      <p>Ground truth is read only inside selected regions, and only to decide the operation and direction. The Program Generator and Executor never see it. The baselines use the dense pixel labels of the same regions, so LINGUAL works under much weaker supervision.</p>
+    </section>
+
+    <section id="results">
+      <h2>Results</h2>
+      <p>LINGUAL was tested on three domain shifts across three imaging types:</p>
+      <ul>
+        <li><b>MRI:</b> CHAOS T1, in-phase to out-of-phase (liver, both kidneys, spleen).</li>
+        <li><b>Ultrasound:</b> breast tumors, BUSI to UDIAT.</li>
+        <li><b>X-ray:</b> lungs, Montgomery to Shenzhen.</li>
+      </ul>
+      <p>The segmentation model is DeepLabv3+. Patch-based methods use a 5% area budget, and superpixel methods use a 25-superpixel budget.</p>
+      <div class="stats">
+        <div class="stat"><b>0.53%</b><span>average Dice gap to polygon delineation, with no pixel labels</span></div>
+        <div class="stat"><b>1.38%</b><span>average Dice gap to pixel-level ground truth in the same regions</span></div>
+        <div class="stat"><b>+1.88%</b><span>average Dice gain over superpixel AL</span></div>
+        <div class="stat"><b>25.27%</b><span>average reduction in estimated annotation time</span></div>
+      </div>
+
+      <h3>Against patch-based AL</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Method</th><th>IP&rarr;OOP</th><th>BUSI&rarr;UDIAT</th><th>Mont.&rarr;Shen.</th></tr></thead>
+          <tbody>
+            <tr><td>Source model</td><td>53.8</td><td>66.4</td><td>82.6</td></tr>
+            <tr><td>Random selection</td><td>65.3&plusmn;4.2</td><td>67.1&plusmn;5.2</td><td>87.2&plusmn;2.6</td></tr>
+            <tr><td>Fully supervised</td><td>87.2&plusmn;0.4</td><td>81.1&plusmn;0.3</td><td>95.2&plusmn;1.2</td></tr>
+            <tr><td>Entropy (GT ROI)</td><td>85.5&plusmn;0.5</td><td>79.2&plusmn;0.9</td><td>94.9&plusmn;0.4</td></tr>
+            <tr><td>Entropy (Poly)</td><td>84.3&plusmn;0.6</td><td>78.2&plusmn;1.1</td><td>94.3&plusmn;0.7</td></tr>
+            <tr class="ours"><td>Entropy + LINGUAL</td><td>83.2&plusmn;0.6</td><td>77.9&plusmn;0.9</td><td>93.5&plusmn;0.5</td></tr>
+            <tr><td>RIPU (GT ROI)</td><td>85.9&plusmn;0.5</td><td>78.5&plusmn;1.4</td><td>94.8&plusmn;0.4</td></tr>
+            <tr><td>RIPU (Poly)</td><td>84.9&plusmn;0.8</td><td>77.4&plusmn;1.9</td><td>94.3&plusmn;0.3</td></tr>
+            <tr class="ours"><td>RIPU + LINGUAL</td><td>84.1&plusmn;0.5</td><td>77.7&plusmn;1.3</td><td>93.7&plusmn;0.3</td></tr>
+            <tr><td>ODES (GT ROI)</td><td>86.4&plusmn;0.5</td><td>78.5&plusmn;1.1</td><td>94.6&plusmn;0.3</td></tr>
+            <tr><td>ODES (Poly)</td><td>85.6&plusmn;0.7</td><td>78.2&plusmn;0.8</td><td>93.8&plusmn;0.4</td></tr>
+            <tr class="ours"><td>ODES + LINGUAL</td><td>84.2&plusmn;0.8</td><td>78.1&plusmn;0.8</td><td>93.6&plusmn;0.2</td></tr>
+            <tr><td>HALO (GT ROI)</td><td>86.3&plusmn;0.4</td><td>79.7&plusmn;0.4</td><td>95.1&plusmn;0.2</td></tr>
+            <tr><td>HALO (Poly)</td><td>85.4&plusmn;0.7</td><td>78.6&plusmn;0.8</td><td>94.3&plusmn;0.3</td></tr>
+            <tr class="ours"><td>HALO + LINGUAL</td><td>84.3&plusmn;0.6</td><td>78.5&plusmn;0.7</td><td>94.1&plusmn;0.2</td></tr>
+            <tr><td>RIPU ROI + MedSAM</td><td>81.9&plusmn;1.1</td><td>76.9&plusmn;1.5</td><td>91.8&plusmn;0.6</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Dice scores (%). IP&rarr;OOP is averaged over the four abdominal structures. GT ROI uses ground truth directly inside each region. Poly simulates polygon delineation from ground truth. Each LINGUAL row shares the regions of its baseline. The paper also reports HD95 and ASSD.</p>
+      <p>Both GT ROI and Poly get pixel-level supervision, while LINGUAL gets only language feedback. Even so, the gap is small. On the same RIPU regions, LINGUAL also beats MedSAM on Dice in all three shifts.</p>
+
+      <h3>Against superpixel-based AL</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Method</th><th>IP&rarr;OOP</th><th>BUSI&rarr;UDIAT</th><th>Mont.&rarr;Shen.</th></tr></thead>
+          <tbody>
+            <tr><td>ASAL</td><td>79.4&plusmn;0.7</td><td>76.6&plusmn;1.2</td><td>92.5&plusmn;0.7</td></tr>
+            <tr class="ours"><td>ASAL + LINGUAL</td><td>80.5&plusmn;0.9</td><td>77.4&plusmn;0.5</td><td>93.6&plusmn;0.5</td></tr>
+            <tr><td>MulActSeg</td><td>78.1&plusmn;1.3</td><td>74.1&plusmn;1.5</td><td>91.3&plusmn;1.2</td></tr>
+            <tr class="ours"><td>MulActSeg + LINGUAL</td><td>81.1&plusmn;0.6</td><td>76.3&plusmn;0.7</td><td>93.3&plusmn;0.9</td></tr>
+            <tr><td>RSAL</td><td>75.9&plusmn;0.7</td><td>75.2&plusmn;0.6</td><td>92.3&plusmn;0.7</td></tr>
+            <tr class="ours"><td>RSAL + LINGUAL</td><td>79.2&plusmn;0.7</td><td>77.5&plusmn;0.7</td><td>93.4&plusmn;0.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Dice scores (%), 25-superpixel budget.</p>
+      <p>Adding LINGUAL improves all three methods on all three shifts. Its iterative corrections move toward the true boundary, instead of staying inside a fixed superpixel that may have leaked across it.</p>
+
+      <h3>Estimated annotation time</h3>
+      <p>Time is estimated from published benchmarks over each full dataset:</p>
+      <ul>
+        <li><b>Polygon delineation:</b> vertices are simulated with the Douglas-Peucker algorithm, at 5.55 seconds per vertex.</li>
+        <li><b>LINGUAL:</b> about 4 seconds per region to decide the correction, plus speaking time at 90 words per minute, plus the automatic program generation and execution time.</li>
+      </ul>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Shift</th><th>Polygon</th><th>LINGUAL human</th><th>LINGUAL auto</th><th>LINGUAL total</th><th>Saved</th></tr></thead>
+          <tbody>
+            <tr><td>BUSI&rarr;UDIAT</td><td>13.79</td><td>7.90</td><td>1.78</td><td>9.68</td><td>29.80%</td></tr>
+            <tr><td>IP&rarr;OOP</td><td>42.90</td><td>29.98</td><td>3.49</td><td>33.47</td><td>21.98%</td></tr>
+            <tr><td>Mont.&rarr;Shen.</td><td>34.90</td><td>23.90</td><td>2.61</td><td>26.51</td><td>24.04%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">All values are estimates, in hours. Human is the time to decide and speak. Auto is program generation and execution. Saved compares the Polygon and LINGUAL totals.</p>
+
+      <h3>Larger regions, same effort</h3>
+      <p>Doubling the region size while keeping the number of regions raises Dice. Manual effort stays comparable, because it depends mainly on the number of regions.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Case</th><th>Region area</th><th>Number of regions</th><th>Manual effort</th><th>BUSI&rarr;UDIAT</th><th>IP&rarr;OOP</th></tr></thead>
+          <tbody>
+            <tr><td>Baseline</td><td>1&times;</td><td>1&times;</td><td>1&times;</td><td>72.62</td><td>65.30</td></tr>
+            <tr><td>Same total area</td><td>2&times;</td><td>0.5&times;</td><td>0.5&times;</td><td>69.29</td><td>62.34</td></tr>
+            <tr class="ours"><td>Same region count</td><td>2&times;</td><td>1&times;</td><td>1&times;</td><td>74.31</td><td>70.81</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Dice scores (%). The baseline uses 2 regions per round and 3 active rounds.</p>
+
+      <h3>Program Generator robustness</h3>
+      <p>The Program Generator was tested on 688 paraphrased instructions, across all seven operations and eight directions. They include formal and informal wording, alternative vocabulary, and combined operations. Unparseable or incorrect instructions fall back to the original prediction.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Operation</th><th>Samples</th><th>Parsed (%)</th><th>Correct (%)</th></tr></thead>
+          <tbody>
+            <tr><td>EXPAND</td><td>128</td><td>99.2</td><td>97.7</td></tr>
+            <tr><td>SHRINK</td><td>128</td><td>100.0</td><td>91.4</td></tr>
+            <tr><td>SMOOTH</td><td>80</td><td>100.0</td><td>97.5</td></tr>
+            <tr><td>FILL</td><td>80</td><td>100.0</td><td>98.75</td></tr>
+            <tr><td>REMOVE</td><td>80</td><td>100.0</td><td>98.75</td></tr>
+            <tr><td>FOREGROUND</td><td>16</td><td>100.0</td><td>100.0</td></tr>
+            <tr><td>BACKGROUND</td><td>16</td><td>100.0</td><td>100.0</td></tr>
+            <tr><td>Multiple operations</td><td>160</td><td>100.0</td><td>91.9</td></tr>
+            <tr class="ours"><td>Overall</td><td>688</td><td>99.9</td><td>95.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Budget and granularity</h3>
+      <figure>
+        <img src="assets/fig5_ablation.png" alt="Two line charts on IP to OOP. Dice rises quickly with budget and plateaus after about 5 percent. Dice peaks at granularity 0.10." loading="lazy" width="1400" height="589">
+        <figcaption><b>Ablations on IP&rarr;OOP.</b> (a) Dice rises quickly at low budgets, then plateaus. (b) Dice peaks at granularity 0.1. Too low, and A<sub>in</sub> and A<sub>out</sub> barely overlap, so refinement stops. Too high, and the regions spill past the true boundary.</figcaption>
+      </figure>
+
+      <h3>Limitations</h3>
+      <ul>
+        <li>LINGUAL refines the source model&rsquo;s predictions, so its efficiency depends on their quality. It still helps from poor starts: Dice rises from 53.8 to 84.1 on IP&rarr;OOP with RIPU.</li>
+        <li>Corrections can be weaker in regions with mixed false positives and false negatives, branching, or disconnected structures.</li>
+        <li>The results concern annotation effort and accuracy. Clinical acceptability for a specific task still needs validation with clinicians.</li>
+      </ul>
+    </section>
+
+    <section id="code">
+      <h2>Code</h2>
+      <p>The code is open source at <a href="https://github.com/ShazidAraf/LINGUAL">github.com/ShazidAraf/LINGUAL</a>. It needs Python 3.10, PyTorch 2.0.1, CUDA 11.8, one GPU, and an OpenAI API key for program generation.</p>
+      <pre><code>git clone https://github.com/ShazidAraf/LINGUAL.git
+cd LINGUAL
+conda env create -f environment.yml
+conda activate lingual
+export OPENAI_API_KEY=&lt;your-key&gt;
+python main.py --cfg configs/UDIAT.txt --method RIPU</code></pre>
+      <p>Download the GraCo weights, add a source model checkpoint, and set your paths in the config file. The README has the details. Configs are included for all three domain shifts.</p>
+    </section>
+
+    <section id="citation">
+      <h2>Citation</h2>
+      <div class="cite">
+        <button class="copy" type="button" data-copy="bib">Copy</button>
+        <pre id="bib"><code>@inproceedings{islam2027lingual,
+  title     = {LINGUAL: Language-INtegrated GUidance in Active Learning
+               for Medical Image Segmentation},
+  author    = {Islam, Md Shazid and Bera, Shreyangshu and Paul, Sudipta and
+               Roy-Chowdhury, Amit},
+  booktitle = {Winter Conference on Applications of Computer Vision (WACV)},
+  year      = {2027}
+}</code></pre>
+      </div>
+      <p class="note">* Sudipta Paul contributed in his personal capacity. The views expressed are his own and do not necessarily represent those of Samsung Electronics.</p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wide">
+    <span>Vision and Learning Group, UC Riverside</span>
+    <span><a href="../../">Back to Md Shazid Islam&rsquo;s homepage</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var t = document.getElementById(b.dataset.copy).innerText;
+    try {
+      navigator.clipboard.writeText(t).then(function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1600); });
+    } catch (e) {}
+  });
+});
+</script>
+<script>
+(function(){
+  var b=document.querySelector('.theme-toggle'); if(!b) return;
+    function cur(){var t=document.documentElement.getAttribute('data-theme');return t==='dark'?'dark':'light';}
+  function sync(){var d=cur()==='dark';b.setAttribute('aria-label',d?'Switch to light theme':'Switch to dark theme');b.classList.toggle('is-dark',d);}
+  b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
+  sync();
+})();
+</script>
+</body>
+</html>
